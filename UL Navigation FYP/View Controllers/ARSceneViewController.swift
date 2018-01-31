@@ -11,7 +11,7 @@ import ARKit
 import MapKit
 import QuartzCore
 
-class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CLLocationManagerDelegate {
+class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CLLocationManagerDelegate {
     // MARK: - IBOutlets
     
     @IBOutlet weak var sessionInfoView: UIVisualEffectView!

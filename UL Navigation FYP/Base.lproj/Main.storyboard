@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="retina5_9" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="X72-yl-fEO">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -10,26 +10,26 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Scene View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BV1-FR-VrT" customClass="ARSceneViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1WB-l3-WyM">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pFv-b4-x8r">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                             </arscnView>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="8Qn-Uh-z6N">
-                                <rect key="frame" x="234" y="16" width="125" height="125"/>
+                                <rect key="frame" x="273" y="16" width="125" height="125"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="125" id="SiW-Pw-ABm"/>
                                     <constraint firstAttribute="height" constant="125" id="Tsb-KK-OSU"/>
                                 </constraints>
                             </mapView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kPM-nw-Co8">
-                                <rect key="frame" x="8" y="713" width="120" height="45"/>
+                                <rect key="frame" x="8" y="671" width="120" height="45"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="HxT-LF-GbZ">
                                     <rect key="frame" x="0.0" y="0.0" width="120" height="45"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -55,7 +55,7 @@
                                 <blurEffect style="light"/>
                             </visualEffectView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZJN-bm-R0O">
-                                <rect key="frame" x="136" y="713" width="231" height="45"/>
+                                <rect key="frame" x="136" y="671" width="270" height="45"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="v3q-L4-tCN"/>
@@ -98,6 +98,77 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="117.59999999999999" y="117.39130434782609"/>
+        </scene>
+        <!--Map Display View Controller-->
+        <scene sceneID="4kI-T4-nHr">
+            <objects>
+                <viewController id="X72-yl-fEO" customClass="MapDisplayViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fHf-F9-joG">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="C7k-OV-qHF">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <subviews>
+                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P5j-qa-eXo">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="368"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="X72-yl-fEO" id="gSS-RQ-ebr"/>
+                                        </connections>
+                                    </mapView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eca-9w-kI5">
+                                        <rect key="frame" x="0.0" y="368" width="414" height="368"/>
+                                        <subviews>
+                                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="PGH-BJ-yUt">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="TjM-ZX-NxJ"/>
+                                                </constraints>
+                                                <textInputTraits key="textInputTraits"/>
+                                                <connections>
+                                                    <outlet property="delegate" destination="X72-yl-fEO" id="8Qx-ow-s36"/>
+                                                </connections>
+                                            </searchBar>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1CS-Qw-8bc">
+                                                <rect key="frame" x="0.0" y="50" width="414" height="318"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <connections>
+                                                    <outlet property="dataSource" destination="X72-yl-fEO" id="BNQ-m8-PSZ"/>
+                                                    <outlet property="delegate" destination="X72-yl-fEO" id="rK3-x5-MjS"/>
+                                                </connections>
+                                            </tableView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="1CS-Qw-8bc" secondAttribute="bottom" id="2QK-DG-QXC"/>
+                                            <constraint firstItem="1CS-Qw-8bc" firstAttribute="top" secondItem="eca-9w-kI5" secondAttribute="top" constant="50" id="4k5-ss-DPy"/>
+                                            <constraint firstAttribute="trailing" secondItem="PGH-BJ-yUt" secondAttribute="trailing" id="KfZ-vV-eHH"/>
+                                            <constraint firstItem="PGH-BJ-yUt" firstAttribute="top" secondItem="eca-9w-kI5" secondAttribute="top" id="OIf-jx-YVZ"/>
+                                            <constraint firstItem="PGH-BJ-yUt" firstAttribute="leading" secondItem="eca-9w-kI5" secondAttribute="leading" id="VVo-iX-zMr"/>
+                                            <constraint firstItem="1CS-Qw-8bc" firstAttribute="leading" secondItem="eca-9w-kI5" secondAttribute="leading" id="cqY-Gm-U2f"/>
+                                            <constraint firstAttribute="trailing" secondItem="1CS-Qw-8bc" secondAttribute="trailing" id="vrg-oK-dnQ"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <variation key="heightClass=compact" axis="horizontal"/>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="C7k-OV-qHF" firstAttribute="top" secondItem="fHf-F9-joG" secondAttribute="top" id="IqG-cl-McL"/>
+                            <constraint firstItem="C7k-OV-qHF" firstAttribute="trailing" secondItem="UrX-C3-45y" secondAttribute="trailing" id="Uyr-nR-Fd8"/>
+                            <constraint firstItem="C7k-OV-qHF" firstAttribute="leading" secondItem="UrX-C3-45y" secondAttribute="leading" id="bMU-uO-0kZ"/>
+                            <constraint firstItem="C7k-OV-qHF" firstAttribute="bottom" secondItem="UrX-C3-45y" secondAttribute="bottom" id="rwp-SP-9TN"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="UrX-C3-45y"/>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="P5j-qa-eXo" id="aAq-cp-TZ8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ovd-HQ-cJb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-768.75" y="116.25"/>
         </scene>
     </scenes>
 </document>
