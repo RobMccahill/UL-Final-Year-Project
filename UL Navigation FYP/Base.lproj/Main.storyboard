@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tXr-a1-R10">
+            <objects>
+                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1WB-l3-WyM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pFv-b4-x8r">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                            </arscnView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="8Qn-Uh-z6N">
+                                <rect key="frame" x="234" y="16" width="125" height="125"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="125" id="SiW-Pw-ABm"/>
+                                    <constraint firstAttribute="height" constant="125" id="Tsb-KK-OSU"/>
+                                </constraints>
+                            </mapView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kPM-nw-Co8">
+                                <rect key="frame" x="8" y="713" width="120" height="45"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="HxT-LF-GbZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="120" height="45"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSS-k2-Fhv">
+                                            <rect key="frame" x="8" y="8" width="104" height="29"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="FSS-k2-Fhv" firstAttribute="leading" secondItem="HxT-LF-GbZ" secondAttribute="leading" constant="8" id="H4j-tF-dSc"/>
+                                        <constraint firstItem="FSS-k2-Fhv" firstAttribute="top" secondItem="HxT-LF-GbZ" secondAttribute="top" constant="8" id="aY2-5g-hOZ"/>
+                                        <constraint firstAttribute="bottom" secondItem="FSS-k2-Fhv" secondAttribute="bottom" constant="8" id="bdd-bJ-nsr"/>
+                                        <constraint firstAttribute="trailing" secondItem="FSS-k2-Fhv" secondAttribute="trailing" constant="8" id="rVS-dw-GvZ"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="2sZ-4L-Qpa"/>
+                                    <constraint firstAttribute="height" constant="45" id="wi8-O8-RlH"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZJN-bm-R0O">
+                                <rect key="frame" x="136" y="713" width="231" height="45"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="v3q-L4-tCN"/>
+                                </constraints>
+                                <state key="normal" title="Start Route"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="createPath:" destination="BV1-FR-VrT" eventType="touchUpInside" id="s7B-W6-5pt"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="8Qn-Uh-z6N" firstAttribute="top" secondItem="1WB-l3-WyM" secondAttribute="top" constant="16" id="A4W-ee-9Fp"/>
+                            <constraint firstItem="QA8-Rw-JBo" firstAttribute="trailing" secondItem="ZJN-bm-R0O" secondAttribute="trailing" constant="8" id="Dc4-vW-Yze"/>
+                            <constraint firstItem="QA8-Rw-JBo" firstAttribute="bottom" secondItem="kPM-nw-Co8" secondAttribute="bottom" constant="20" id="F6U-6f-9nb"/>
+                            <constraint firstItem="pFv-b4-x8r" firstAttribute="trailing" secondItem="QA8-Rw-JBo" secondAttribute="trailing" id="FgP-Hc-zGb"/>
+                            <constraint firstItem="pFv-b4-x8r" firstAttribute="top" secondItem="1WB-l3-WyM" secondAttribute="top" id="SrP-ud-R7H"/>
+                            <constraint firstItem="pFv-b4-x8r" firstAttribute="bottom" secondItem="QA8-Rw-JBo" secondAttribute="bottom" id="WVA-e6-biG"/>
+                            <constraint firstItem="ZJN-bm-R0O" firstAttribute="leading" secondItem="kPM-nw-Co8" secondAttribute="trailing" constant="8" id="gLp-ge-419"/>
+                            <constraint firstItem="QA8-Rw-JBo" firstAttribute="bottom" secondItem="ZJN-bm-R0O" secondAttribute="bottom" constant="20" id="mSa-P8-MFu"/>
+                            <constraint firstItem="QA8-Rw-JBo" firstAttribute="trailing" secondItem="8Qn-Uh-z6N" secondAttribute="trailing" constant="16" id="r8O-ku-Iu0"/>
+                            <constraint firstItem="pFv-b4-x8r" firstAttribute="leading" secondItem="QA8-Rw-JBo" secondAttribute="leading" id="sj5-Eo-ZNV"/>
+                            <constraint firstItem="kPM-nw-Co8" firstAttribute="leading" secondItem="QA8-Rw-JBo" secondAttribute="leading" constant="8" id="wdH-gm-Sj1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="QA8-Rw-JBo"/>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="8Qn-Uh-z6N" id="fWI-jG-wmk"/>
+                        <outlet property="sceneView" destination="pFv-b4-x8r" id="VZ3-RI-eXi"/>
+                        <outlet property="sessionInfoLabel" destination="FSS-k2-Fhv" id="oQF-AU-mKu"/>
+                        <outlet property="sessionInfoView" destination="kPM-nw-Co8" id="c89-Tg-9Js"/>
+                        <outlet property="startRouteButton" destination="ZJN-bm-R0O" id="8hk-xY-Liv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="117.59999999999999" y="117.39130434782609"/>
+        </scene>
+    </scenes>
+</document>
