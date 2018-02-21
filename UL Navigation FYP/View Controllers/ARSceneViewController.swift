@@ -21,9 +21,9 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     @IBOutlet var mapView: MKMapView!
     
     var locationManager = CLLocationManager()
-    
     let height = Float(-1.5)
-    
+    var destinationCoord = CLLocationCoordinate2D()
+    var mapZoomed = false
     // MARK: - View Life Cycle
     
     /// - Tag: StartARSession
@@ -256,27 +256,38 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     
     //MARK CLLocationManagerDelegate methods
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        mapView.showsUserLocation = true;
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = CLLocationCoordinate2DMake(52.664029, -8.628720)
-        mapView.addAnnotation(annotation)
-        
-        mapView.showAnnotations(mapView.annotations, animated: true)
-        
-        //        if(locations.count > 0) {
-        //            let distanceInMetres = Float((locations[0].distance(from: CLLocation.init(latitude: annotation2.coordinate.latitude, longitude: annotation2.coordinate.longitude))))
-        //
-        //            let textGeometry = SCNSphere.init(radius: 5.0)
-        //            textGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-        //
-        //            let textNode = SCNNode.init(geometry: textGeometry)
-        //            textNode.position = SCNVector3Make(0, 0, -distanceInMetres)
-        //
-        //            sceneView.scene.rootNode.addChildNode(textNode)
-        //        }
-        
-        locationManager.stopUpdatingLocation()
+    }
+}
+
+extension ARSceneViewController : MKMapViewDelegate {
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        if(!mapZoomed) {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = self.destinationCoord
+            
+            mapView.addAnnotation(annotation)
+            mapView.showAnnotations(mapView.annotations, animated: true)
+            mapZoomed = true
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?{
+        if annotation is MKUserLocation {
+            //return nil so map view draws "blue dot" for standard user location
+            return nil
+        }
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+        pinView?.pinTintColor = UIColor.red
+//        pinView?.canShowCallout = true
+//        let smallSquare = CGSize(width: 30, height: 30)
+//        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: smallSquare))
+//        button.setBackgroundImage(UIImage(named: "directions"), for: .normal)
+//        button.addTarget(self, action: #selector(getDirections), for: .touchUpInside)
+//        //        button.setTitle("Get Directions", for: .normal)
+//        //        button.setTitleColor(.blue, for: .normal)
+//        pinView?.leftCalloutAccessoryView = button
+        return pinView
     }
 }

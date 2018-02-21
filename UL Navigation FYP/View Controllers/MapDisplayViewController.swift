@@ -8,15 +8,25 @@
 import UIKit
 import MapKit
 
+protocol HandleMapSearch {
+    func dropPinZoomIn(placemark:MKPlacemark)
+}
+
 class MapDisplayViewController: UIViewController {
     @IBOutlet var mapView: MKMapView!
+    @IBOutlet var tableView: UITableView!
     
     let locationManager = CLLocationManager()
+    var mapZoomed = false
+    var matchingItems:[MKMapItem] = []
+    var selectedPin:MKPlacemark? = nil
+    var handleMapSearchDelegate:HandleMapSearch? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         locationManager.delegate = self
+        handleMapSearchDelegate = self
         
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             locationManager.startUpdatingLocation()
@@ -56,22 +66,85 @@ extension MapDisplayViewController : UISearchBarDelegate {
         searchBar.setShowsCancelButton(false, animated: true)
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request = MKLocalSearchRequest()
+        request.naturalLanguageQuery = searchBar.text
+        request.region = mapView.region
+        let search = MKLocalSearch(request: request)
+        search.start { response, _ in
+            guard let response = response else {
+                return
+            }
+            self.matchingItems = response.mapItems
+            self.tableView.reloadData()
+        }
+        searchBar.resignFirstResponder()
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
     }
 }
 
 extension MapDisplayViewController : UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedItem = matchingItems[indexPath.row].placemark
+        handleMapSearchDelegate?.dropPinZoomIn(placemark: selectedItem)
+    }
 }
 
 extension MapDisplayViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return matchingItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "subtitleCell")!
+        let selectedItem = matchingItems[indexPath.row]
+        cell.textLabel?.text = selectedItem.name
+        cell.detailTextLabel?.text = selectedItem.placemark.title
+        return cell
+    }
+}
+
+extension MapDisplayViewController : MKMapViewDelegate {
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        if(!mapZoomed) {
+            mapView.showAnnotations(mapView.annotations, animated: true)
+            mapZoomed = true
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?{
+        if annotation is MKUserLocation {
+            //return nil so map view draws "blue dot" for standard user location
+            return nil
+        }
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+        pinView?.pinTintColor = UIColor.red
+        pinView?.canShowCallout = true
+        let smallSquare = CGSize(width: 30, height: 30)
+        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: smallSquare))
+        button.setBackgroundImage(UIImage(named: "directions"), for: .normal)
+        button.addTarget(self, action: #selector(getDirections), for: .touchUpInside)
+//        button.setTitle("Get Directions", for: .normal)
+//        button.setTitleColor(.blue, for: .normal)
+        pinView?.leftCalloutAccessoryView = button
+        return pinView
+    }
+    
+    @objc func getDirections(){
+        if let selectedPin = selectedPin {
+            let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARSceneViewController
+            arSceneVC.destinationCoord = selectedPin.coordinate
+            self.navigationController?.pushViewController(arSceneVC, animated: true)
+        }
     }
 }
 
@@ -79,9 +152,6 @@ extension MapDisplayViewController : CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        let span = MKCoordinateSpanMake(0.05, 0.05)
-        let region = MKCoordinateRegion(center: mapView.userLocation.coordinate, span: span)
-        mapView.setRegion(region, animated: true)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -107,5 +177,32 @@ extension MapDisplayViewController : CLLocationManagerDelegate {
         default:
             break
         }
+    }
+}
+
+extension MapDisplayViewController: HandleMapSearch {
+    func dropPinZoomIn(placemark:MKPlacemark){
+        // cache the pin
+        selectedPin = placemark
+        // clear existing pins
+        mapView.removeAnnotations(mapView.annotations)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = placemark.coordinate
+        annotation.title = placemark.name
+        var subtitle = ""
+        
+        if let city = placemark.locality,
+            let state = placemark.administrativeArea {
+            subtitle += city + ", " + state
+        } else if let state = placemark.administrativeArea,
+                  let country = placemark.country {
+            subtitle += state + ", " + country
+        }
+        
+        annotation.subtitle = subtitle
+        
+        mapView.addAnnotation(annotation)
+        mapView.setCenter(annotation.coordinate, animated: true)
+        mapView.selectAnnotation(annotation, animated: true)
     }
 }
