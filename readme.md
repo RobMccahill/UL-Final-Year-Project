@@ -1,4 +1,4 @@
-#Final Year Project
+# Final Year Project
 This project is a navigation system built on the iOS SDK utilizing ARKit and various MapKit frameworks.
 
 The goal is to provide a visual aid through the devices' camera and to utilize ARKits' real-world tracking to refine location accuracy.
