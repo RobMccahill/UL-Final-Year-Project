@@ -141,7 +141,18 @@ extension MapDisplayViewController : MKMapViewDelegate {
     
     @objc func getDirections(){
         if let selectedPin = selectedPin {
+            
+            let request = MKDirectionsRequest()
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.mapView.userLocation.coordinate, addressDictionary: nil))
+            
+            request.destination = MKMapItem(placemark: MKPlacemark(coordinate: selectedPin.coordinate, addressDictionary: nil))
+            request.requestsAlternateRoutes = true
+            request.transportType = .walking
+            
+            let directions = MKDirections(request: request)
+            
             let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARSceneViewController
+            arSceneVC.directions = directions
             arSceneVC.destinationCoord = selectedPin.coordinate
             self.navigationController?.pushViewController(arSceneVC, animated: true)
         }

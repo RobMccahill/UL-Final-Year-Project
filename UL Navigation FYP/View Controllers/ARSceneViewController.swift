@@ -22,8 +22,12 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     
     var locationManager = CLLocationManager()
     let height = Float(-1.5)
-    var destinationCoord = CLLocationCoordinate2D()
+    
+    var directions : MKDirections?
+    var destinationCoord : CLLocationCoordinate2D?
     var mapZoomed = false
+    
+    
     // MARK: - View Life Cycle
     
     /// - Tag: StartARSession
@@ -82,6 +86,7 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         } else {
             locationManager.requestWhenInUseAuthorization()
         }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -90,6 +95,11 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         // Pause the view's AR session.
         sceneView.session.pause()
     }
+    
+    @IBAction func backButtonPressed(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
     // MARK: - ARSessionDelegate
     
@@ -205,18 +215,10 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         
         userNode.rotation = SCNVector4Make(0, 1, 0, Float(toRadians(degrees: 150)))
         
-        //        let userGeometry = SCNCylinder(radius: 0.1, height: 0.1)
-        //        userGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.4)
-        //
-        //        let userNode = SCNNode(geometry:userGeometry)
-        //        userNode.position = SCNVector3Make(0, height, 0)
-        //        self.sceneView.scene.rootNode.addChildNode(userNode)
-        //
-        //        let firstGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
-        //        firstGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.4)
-        //        addGeometryToPath(geometry: firstGeometry, prevNode: userNode)
         startRouteButton.isHidden = true
     }
+    
+    
     
     func addGeometryToPath(geometry : SCNBox, prevNode : SCNNode) {
         let newPathNode = SCNNode(geometry: geometry)
@@ -263,9 +265,24 @@ extension ARSceneViewController : MKMapViewDelegate {
     func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
         if(!mapZoomed) {
             let annotation = MKPointAnnotation()
-            annotation.coordinate = self.destinationCoord
+            if let coord = self.destinationCoord {
+                annotation.coordinate = coord
+                mapView.addAnnotation(annotation)
+            }
             
-            mapView.addAnnotation(annotation)
+            if let directions = self.directions {
+                directions.calculate { [unowned self] response, error in
+                    guard let unwrappedResponse = response else { return }
+                    
+                    if(unwrappedResponse.routes.count > 0) {
+                        let route = unwrappedResponse.routes[0]
+                        
+                        self.mapView.add(route.polyline)
+                        self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                    }
+                }
+            }
+            
             mapView.showAnnotations(mapView.annotations, animated: true)
             mapZoomed = true
         }
@@ -289,5 +306,11 @@ extension ARSceneViewController : MKMapViewDelegate {
 //        //        button.setTitleColor(.blue, for: .normal)
 //        pinView?.leftCalloutAccessoryView = button
         return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        renderer.strokeColor = UIColor.blue
+        return renderer
     }
 }
