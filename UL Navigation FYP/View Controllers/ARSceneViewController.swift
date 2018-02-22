@@ -36,10 +36,10 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         
         startRouteButton.isHidden = true
         
-        //rounding
-        mapView.clipsToBounds = true
-        mapView.layer.cornerRadius = mapView.frame.size.width / 2
-        
+//        //rounding
+//        mapView.clipsToBounds = true
+//        mapView.layer.cornerRadius = mapView.frame.size.width / 2
+//
         // border
         mapView.layer.borderColor = UIColor.gray.cgColor
         mapView.layer.borderWidth = 1.5
