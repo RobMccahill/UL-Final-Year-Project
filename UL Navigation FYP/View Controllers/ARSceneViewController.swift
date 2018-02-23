@@ -23,9 +23,10 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     var locationManager = CLLocationManager()
     let height = Float(-1.5)
     
-    var directions : MKDirections?
+    var directions : MKDirectionsResponse?
     var destinationCoord : CLLocationCoordinate2D?
     var mapZoomed = false
+    var routeStarted = false
     
     
     // MARK: - View Life Cycle
@@ -63,7 +64,7 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         configuration.isLightEstimationEnabled = true;
-        configuration.worldAlignment = .gravityAndHeading
+        configuration.worldAlignment = .gravity
         //        sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
         sceneView.session.run(configuration)
         
@@ -145,7 +146,9 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         switch trackingState {
         case .normal:
             message = ""
-            startRouteButton.isHidden = false
+            if(!routeStarted) {
+                startRouteButton.isHidden = false
+            }
             
         case .notAvailable:
             message = "Tracking unavailable."
@@ -173,58 +176,112 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     
     @IBAction func createPath(_ sender: Any) {
         
-        let userGeometry = SCNCylinder(radius: 0.1, height: 0.1)
-        userGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
-        
-        let userNode = SCNNode(geometry:userGeometry)
-        userNode.position = SCNVector3Make(0, height, 0)
-        self.sceneView.scene.rootNode.addChildNode(userNode)
-        
-        let firstGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
-        firstGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-        
-        let firstPathNode = SCNNode(geometry: firstGeometry)
-        firstPathNode.position = SCNVector3Make(0, 0, Float(-firstGeometry.length) / 2)
-        userNode.addChildNode(firstPathNode)
-        
-        let secondGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
-        secondGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-        
-        let secondPathNode = SCNNode(geometry: secondGeometry)
-        secondPathNode.position = SCNVector3Make(Float(-firstGeometry.length) / 2, 0, Float(-firstGeometry.length))
-        
-        secondPathNode.eulerAngles.y = .pi / 2
-        
-        userNode.addChildNode(secondPathNode)
-        
-        let thirdGeometry = SCNBox(width: 0.1, height: 0.1, length: 1, chamferRadius: 0.0)
-        thirdGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-        
-        let thirdPathNode = SCNNode(geometry: thirdGeometry)
-        thirdPathNode.position = SCNVector3Make(Float(secondPathNode.worldPosition.x) - Float(secondGeometry.length) / 2, 0, Float(-secondGeometry.length) - Float(thirdGeometry.length) / 2)
-        
-        userNode.addChildNode(thirdPathNode)
-        
-        let destinationGeometry = SCNCylinder(radius: 0.1, height: 0.1)
-        destinationGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
-        
-        let destinationNode = SCNNode(geometry: destinationGeometry)
-        destinationNode.position = SCNVector3Make(thirdPathNode.position.x, 0, thirdPathNode.position.z - Float(thirdGeometry.length) + 0.4)
-        
-        userNode.addChildNode(destinationNode)
-        
-        userNode.rotation = SCNVector4Make(0, 1, 0, Float(toRadians(degrees: 150)))
+//        let userGeometry = SCNCylinder(radius: 0.1, height: 0.1)
+//        userGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+//
+//        let userNode = SCNNode(geometry:userGeometry)
+//        userNode.position = SCNVector3Make(0, height, 0)
+//        self.sceneView.scene.rootNode.addChildNode(userNode)
+//
+//        let firstGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
+//        firstGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
+//
+//        let firstPathNode = SCNNode(geometry: firstGeometry)
+//        firstPathNode.position = SCNVector3Make(0, 0, Float(-firstGeometry.length) / 2)
+//        userNode.addChildNode(firstPathNode)
+//
+//        let secondGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
+//        secondGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
+//
+//        let secondPathNode = SCNNode(geometry: secondGeometry)
+//        secondPathNode.position = SCNVector3Make(Float(-firstGeometry.length) / 2, 0, Float(-firstGeometry.length))
+//
+//        secondPathNode.eulerAngles.y = .pi / 2
+//
+//        userNode.addChildNode(secondPathNode)
+//
+//        let thirdGeometry = SCNBox(width: 0.1, height: 0.1, length: 1, chamferRadius: 0.0)
+//        thirdGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
+//
+//        let thirdPathNode = SCNNode(geometry: thirdGeometry)
+//        thirdPathNode.position = SCNVector3Make(Float(secondPathNode.worldPosition.x) - Float(secondGeometry.length) / 2, 0, Float(-secondGeometry.length) - Float(thirdGeometry.length) / 2)
+//
+//        userNode.addChildNode(thirdPathNode)
+//
+//        let destinationGeometry = SCNCylinder(radius: 0.1, height: 0.1)
+//        destinationGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+//
+//        let destinationNode = SCNNode(geometry: destinationGeometry)
+//        destinationNode.position = SCNVector3Make(thirdPathNode.position.x, 0, thirdPathNode.position.z - Float(thirdGeometry.length) + 0.4)
+//
+//        userNode.addChildNode(destinationNode)
+//
+//        userNode.rotation = SCNVector4Make(0, 1, 0, Float(toRadians(degrees: 150)))
         
         startRouteButton.isHidden = true
+        routeStarted = true
+        
+        if let directions = self.directions {
+                
+                if(directions.routes.count > 0) {
+                    let route = directions.routes[0]
+                    
+                    let coordsPointer = UnsafeMutablePointer<CLLocationCoordinate2D>.allocate(capacity: route.polyline.pointCount)
+                    route.polyline.getCoordinates(coordsPointer, range: NSMakeRange(0, route.polyline.pointCount))
+                    
+                    var i = 0
+                    while(i < route.polyline.pointCount) {
+                        if(i > 0) {
+                            self.createPathBetweenPoints(pointA: coordsPointer[i-1], pointB: coordsPointer[i], toNode:self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+                        }
+                        
+                        i += 1
+                    }
+                }
+        }
     }
     
-    
-    
-    func addGeometryToPath(geometry : SCNBox, prevNode : SCNNode) {
-        let newPathNode = SCNNode(geometry: geometry)
-        newPathNode.position = SCNVector3Make(Float(prevNode.worldPosition.x) - Float(prevNode.scale.x) / 2, height, Float(-prevNode.scale.x) - Float(geometry.length) / 2)
+    func createPathBetweenPoints(pointA : CLLocationCoordinate2D,
+                                 pointB : CLLocationCoordinate2D,
+                                 toNode parentNode : SCNNode,
+                                 withOrigin origin : CLLocation) {
+        let annotationA = MKPointAnnotation()
+        let annotationB = MKPointAnnotation()
+        annotationA.coordinate = pointA
+        annotationB.coordinate = pointB
+        self.mapView.addAnnotations([annotationA, annotationB])
         
-        self.sceneView.scene.rootNode.addChildNode(newPathNode)
+        let locationA = CLLocation.init(coordinate: pointA, altitude: 0)
+        let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
+        
+        
+        let coordsA = getCoordsForLoc(origin: origin, loc: locationA)
+        let pointAPos = SCNVector3Make(coordsA.x, height, coordsA.z)
+        
+//        let coordsB = getCoordsForLoc(origin: origin, loc: locationB)
+//        let pointBPos = SCNVector3Make(coordsB.x, height, coordsB.z)
+        let pathLength = CGFloat(locationB.distance(from: locationA))
+        
+        let pathGeometry = SCNBox(width: 2.0, height: 1.0, length: pathLength, chamferRadius: 0.0)
+        pathGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
+        
+        let pathNode = SCNNode(geometry: pathGeometry)
+//        pathNode.pivot = SCNMatrix4MakeTranslation(pointAPos.x, pointAPos.y, pointAPos.z)
+//        pathNode.position = SCNVector3Make(Float(CGFloat(pointAPos.x) + (pathLength / 2)), height, pointAPos.x)
+        pathNode.position = pointAPos
+//        pathNode.rotate(by: SCNVector4Make(0, 1.0, 0, Float(pointA.bearingToCoord(coord: pointB)).degreesToRadians), aroundTarget: pointAPos)
+//        pathNode.eulerAngles.y = Float(pointA.bearingToCoord(coord: pointB))
+        parentNode.addChildNode(pathNode)
+    }
+    
+    func getCoordsForLoc(origin: CLLocation, loc: CLLocation) -> (x : Float, z: Float) {
+        let dist = loc.distance(from: origin)
+        let angle = origin.coordinate.bearingToCoord(coord: loc.coordinate)
+        
+        let pointACoordX = -Float(dist * cos(angle.degreesToRadians))
+        let pointACoordZ = -Float(dist * sin(angle.degreesToRadians))
+        NSLog("(\(pointACoordX), \(pointACoordZ))")
+        return (pointACoordX, pointACoordZ)
     }
     
     func toRadians(degrees : Double) -> Double {
@@ -271,17 +328,13 @@ extension ARSceneViewController : MKMapViewDelegate {
             }
             
             if let directions = self.directions {
-                directions.calculate { [unowned self] response, error in
-                    guard let unwrappedResponse = response else { return }
                     
-                    if(unwrappedResponse.routes.count > 0) {
-                        let route = unwrappedResponse.routes[0]
-                        
+                    if(directions.routes.count > 0) {
+                        let route = directions.routes[0]
                         self.mapView.add(route.polyline)
                         self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
                     }
                 }
-            }
             
             mapView.showAnnotations(mapView.annotations, animated: true)
             mapZoomed = true
@@ -297,14 +350,6 @@ extension ARSceneViewController : MKMapViewDelegate {
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
         pinView?.pinTintColor = UIColor.red
-//        pinView?.canShowCallout = true
-//        let smallSquare = CGSize(width: 30, height: 30)
-//        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: smallSquare))
-//        button.setBackgroundImage(UIImage(named: "directions"), for: .normal)
-//        button.addTarget(self, action: #selector(getDirections), for: .touchUpInside)
-//        //        button.setTitle("Get Directions", for: .normal)
-//        //        button.setTitleColor(.blue, for: .normal)
-//        pinView?.leftCalloutAccessoryView = button
         return pinView
     }
     

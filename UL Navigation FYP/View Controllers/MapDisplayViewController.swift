@@ -151,10 +151,19 @@ extension MapDisplayViewController : MKMapViewDelegate {
             
             let directions = MKDirections(request: request)
             
-            let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARSceneViewController
-            arSceneVC.directions = directions
-            arSceneVC.destinationCoord = selectedPin.coordinate
-            self.navigationController?.pushViewController(arSceneVC, animated: true)
+            directions.calculate { response, error in
+                if let error = error {
+                    NSLog(error.localizedDescription)
+                }
+                guard let unwrappedResponse = response else { return }
+                
+                let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARSceneViewController
+                arSceneVC.directions = unwrappedResponse
+                arSceneVC.destinationCoord = selectedPin.coordinate
+                self.navigationController?.pushViewController(arSceneVC, animated: true)
+            }
+            
+            
         }
     }
 }
