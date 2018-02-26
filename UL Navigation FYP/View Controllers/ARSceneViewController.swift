@@ -218,6 +218,14 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 //
 //        userNode.rotation = SCNVector4Make(0, 1, 0, Float(toRadians(degrees: 150)))
         
+        //north reference
+        let northGeometry = SCNSphere(radius: 1.0)
+        northGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(1.0)
+        let northNode = SCNNode(geometry: northGeometry)
+        northNode.position = SCNVector3Make(0, 0, -50)
+        
+        sceneView.scene.rootNode.addChildNode(northNode)
+        
         startRouteButton.isHidden = true
         routeStarted = true
         
@@ -237,6 +245,9 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                         
                         i += 1
                     }
+                    
+                    //final connection required to link last point to destination
+//                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
                 }
         }
     }
@@ -250,13 +261,18 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let annotationB = MKPointAnnotation()
         annotationA.coordinate = pointA
         annotationB.coordinate = pointB
+        
         self.mapView.addAnnotations([annotationA, annotationB])
         
         let locationA = CLLocation.init(coordinate: pointA, altitude: 0)
         let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
         
-        let coordsA = getCoordsForPoint(origin: origin, point: locationA)
-        let pointAPos = SCNVector3Make(coordsA.x, height, coordsA.z)
+//        let midpointCoord = getMidPointOfCoords(coordA: locationA.coordinate, coordB: locationB.coordinate)
+//
+//        let midpointLoc = CLLocation(coordinate: midpointCoord, altitude: 0)
+//        let coordOfMidpoint = getCoordsForPoint(origin: origin, point: midpointLoc)
+        let coordOfMidpoint = getCoordsForPoint(origin: origin, point: locationA)
+        let midpointPos = SCNVector3Make(coordOfMidpoint.x, height, coordOfMidpoint.z)
         
         let pathLength = CGFloat(locationB.distance(from: locationA))
         
@@ -264,7 +280,7 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         pathGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
         
         let pathNode = SCNNode(geometry: pathGeometry)
-        pathNode.position = pointAPos
+        pathNode.position = midpointPos
         parentNode.addChildNode(pathNode)
     }
     
@@ -275,17 +291,25 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let pointACoordX = -Float(dist * cos(angle.degreesToRadians))
         let pointACoordZ = -Float(dist * sin(angle.degreesToRadians))
         
-        NSLog("Dist : (\(dist), Angle: \(angle.radiansToDegrees))")
+        NSLog("Dist : (\(dist), Angle: \(angle))")
         NSLog("(\(pointACoordX),\(pointACoordZ))")
         return (pointACoordX, pointACoordZ)
     }
     
-    func toRadians(degrees : Double) -> Double {
-        return degrees * .pi / 180
-    }
-    
-    func toDegrees(radians : Double) -> Double {
-        return radians * 180 / .pi
+    func getMidPointOfCoords(coordA: CLLocationCoordinate2D, coordB: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+        
+        let dLon = (coordB.latitude - coordA.latitude).degreesToRadians
+        
+        let lat1 = coordA.latitude.degreesToRadians
+        let lat2 = coordB.latitude.degreesToRadians
+        let lon1 = coordA.longitude.degreesToRadians
+        
+        let Bx = cos(lat2) * cos(dLon);
+        let By = cos(lat2) * sin(dLon);
+        let lat3 = atan2(sin(lat1) + sin(lat2), sqrt((cos(lat1) + Bx) * (cos(lat1) + Bx) + By * By));
+        let lon3 = lon1 + atan2(By, cos(lat1) + Bx);
+        
+        return CLLocationCoordinate2DMake(lat3.radiansToDegrees, lon3.radiansToDegrees)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
