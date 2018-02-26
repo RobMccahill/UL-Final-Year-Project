@@ -9,6 +9,6 @@ import Foundation
 
 extension FloatingPoint {
     
-    public var radiansToDegrees: Self { return self * .pi / 180}
-    public var degreesToRadians: Self { return self * 180 / .pi }
+    public var radiansToDegrees: Self { return self * 180 / .pi}
+    public var degreesToRadians: Self { return self * .pi / 180 }
 }

@@ -245,6 +245,7 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                                  pointB : CLLocationCoordinate2D,
                                  toNode parentNode : SCNNode,
                                  withOrigin origin : CLLocation) {
+        
         let annotationA = MKPointAnnotation()
         let annotationB = MKPointAnnotation()
         annotationA.coordinate = pointA
@@ -254,33 +255,28 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let locationA = CLLocation.init(coordinate: pointA, altitude: 0)
         let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
         
-        
-        let coordsA = getCoordsForLoc(origin: origin, loc: locationA)
+        let coordsA = getCoordsForPoint(origin: origin, point: locationA)
         let pointAPos = SCNVector3Make(coordsA.x, height, coordsA.z)
         
-//        let coordsB = getCoordsForLoc(origin: origin, loc: locationB)
-//        let pointBPos = SCNVector3Make(coordsB.x, height, coordsB.z)
         let pathLength = CGFloat(locationB.distance(from: locationA))
         
         let pathGeometry = SCNBox(width: 2.0, height: 1.0, length: pathLength, chamferRadius: 0.0)
         pathGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
         
         let pathNode = SCNNode(geometry: pathGeometry)
-//        pathNode.pivot = SCNMatrix4MakeTranslation(pointAPos.x, pointAPos.y, pointAPos.z)
-//        pathNode.position = SCNVector3Make(Float(CGFloat(pointAPos.x) + (pathLength / 2)), height, pointAPos.x)
         pathNode.position = pointAPos
-//        pathNode.rotate(by: SCNVector4Make(0, 1.0, 0, Float(pointA.bearingToCoord(coord: pointB)).degreesToRadians), aroundTarget: pointAPos)
-//        pathNode.eulerAngles.y = Float(pointA.bearingToCoord(coord: pointB))
         parentNode.addChildNode(pathNode)
     }
     
-    func getCoordsForLoc(origin: CLLocation, loc: CLLocation) -> (x : Float, z: Float) {
-        let dist = loc.distance(from: origin)
-        let angle = origin.coordinate.bearingToCoord(coord: loc.coordinate)
+    func getCoordsForPoint(origin: CLLocation, point: CLLocation) -> (x : Float, z: Float) {
+        let dist = point.distance(from: origin)
+        let angle = origin.coordinate.bearingToCoord(coord: point.coordinate)
         
         let pointACoordX = -Float(dist * cos(angle.degreesToRadians))
         let pointACoordZ = -Float(dist * sin(angle.degreesToRadians))
-        NSLog("(\(pointACoordX), \(pointACoordZ))")
+        
+        NSLog("Dist : (\(dist), Angle: \(angle.radiansToDegrees))")
+        NSLog("(\(pointACoordX),\(pointACoordZ))")
         return (pointACoordX, pointACoordZ)
     }
     
