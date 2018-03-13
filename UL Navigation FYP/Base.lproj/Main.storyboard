@@ -108,6 +108,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="QA8-Rw-JBo"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="mapView" destination="8Qn-Uh-z6N" id="fWI-jG-wmk"/>
                         <outlet property="sceneView" destination="pFv-b4-x8r" id="VZ3-RI-eXi"/>
@@ -120,10 +121,10 @@
             </objects>
             <point key="canvasLocation" x="421.875" y="116.25"/>
         </scene>
-        <!--Map Display View Controller-->
+        <!--Select Location-->
         <scene sceneID="4kI-T4-nHr">
             <objects>
-                <viewController id="X72-yl-fEO" customClass="MapDisplayViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Select Location" id="X72-yl-fEO" customClass="MapDisplayViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fHf-F9-joG">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -219,14 +220,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="C7k-OV-qHF" firstAttribute="top" secondItem="fHf-F9-joG" secondAttribute="top" id="IqG-cl-McL"/>
                             <constraint firstItem="C7k-OV-qHF" firstAttribute="trailing" secondItem="UrX-C3-45y" secondAttribute="trailing" id="Uyr-nR-Fd8"/>
+                            <constraint firstItem="C7k-OV-qHF" firstAttribute="top" secondItem="fHf-F9-joG" secondAttribute="top" id="Z1k-1i-cHd"/>
                             <constraint firstItem="C7k-OV-qHF" firstAttribute="leading" secondItem="UrX-C3-45y" secondAttribute="leading" id="bMU-uO-0kZ"/>
                             <constraint firstItem="C7k-OV-qHF" firstAttribute="bottom" secondItem="UrX-C3-45y" secondAttribute="bottom" id="rwp-SP-9TN"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="UrX-C3-45y"/>
                     </view>
-                    <navigationItem key="navigationItem" id="DXi-ol-2ZA"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" title="Select Location" id="DXi-ol-2ZA"/>
                     <connections>
                         <outlet property="mapView" destination="P5j-qa-eXo" id="aAq-cp-TZ8"/>
                         <outlet property="tableView" destination="1CS-Qw-8bc" id="dvm-rQ-Tl4"/>
@@ -237,26 +239,26 @@
             </objects>
             <point key="canvasLocation" x="-462.31884057971018" y="115.7608695652174"/>
         </scene>
-        <!--Choose Option View Controller-->
+        <!--Home-->
         <scene sceneID="B1a-i8-cXT">
             <objects>
-                <viewController id="lHf-E0-oWW" customClass="ChooseOptionViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Home" id="lHf-E0-oWW" customClass="ChooseOptionViewController" customModule="UL_Navigation_FYP" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="U2A-M2-E01">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Jlx-uN-n8d">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <rect key="frame" x="0.0" y="20" width="414" height="716"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yKN-mz-E0v">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="368"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="358"/>
                                         <state key="normal" title="Choose a Destination"/>
                                         <connections>
                                             <segue destination="X72-yl-fEO" kind="show" id="luu-v5-LW5"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wYk-wY-2tA">
-                                        <rect key="frame" x="0.0" y="368" width="414" height="368"/>
+                                        <rect key="frame" x="0.0" y="358" width="414" height="358"/>
                                         <state key="normal" title="Scan for QR Code"/>
                                         <connections>
                                             <segue destination="Qk5-jB-CQx" kind="show" id="LO8-ev-fYn"/>
@@ -269,12 +271,13 @@
                         <constraints>
                             <constraint firstItem="ZX0-wO-Nff" firstAttribute="bottom" secondItem="Jlx-uN-n8d" secondAttribute="bottom" id="Hqp-tE-iQM"/>
                             <constraint firstItem="ZX0-wO-Nff" firstAttribute="trailing" secondItem="Jlx-uN-n8d" secondAttribute="trailing" id="beo-EW-M1K"/>
-                            <constraint firstItem="Jlx-uN-n8d" firstAttribute="top" secondItem="U2A-M2-E01" secondAttribute="top" id="heF-Xj-mHu"/>
                             <constraint firstItem="Jlx-uN-n8d" firstAttribute="leading" secondItem="ZX0-wO-Nff" secondAttribute="leading" id="nmM-JQ-yMy"/>
+                            <constraint firstItem="Jlx-uN-n8d" firstAttribute="top" secondItem="ZX0-wO-Nff" secondAttribute="top" id="zAi-ih-NYU"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ZX0-wO-Nff"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Hba-Ld-JJg"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" title="Home" id="Hba-Ld-JJg"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TLF-dE-oZw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -317,7 +320,7 @@
                                 <blurEffect style="light"/>
                             </visualEffectView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Db-CA-zEy">
-                                <rect key="frame" x="8" y="20" width="44" height="30"/>
+                                <rect key="frame" x="8" y="28" width="44" height="30"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="44" id="8mb-eD-JOX"/>
@@ -338,7 +341,7 @@
                             <constraint firstItem="dqJ-Q9-mWE" firstAttribute="width" secondItem="sye-kJ-9co" secondAttribute="width" multiplier="0.6" id="noQ-vq-avz"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="9Db-CA-zEy" secondAttribute="trailing" constant="20" symbolic="YES" id="oD5-xl-P5H"/>
                             <constraint firstItem="C55-Dp-r3Z" firstAttribute="trailing" secondItem="sye-kJ-9co" secondAttribute="trailing" id="rCu-Xk-MLN"/>
-                            <constraint firstItem="9Db-CA-zEy" firstAttribute="top" secondItem="sye-kJ-9co" secondAttribute="top" id="snN-Vp-0uA"/>
+                            <constraint firstItem="9Db-CA-zEy" firstAttribute="top" secondItem="sye-kJ-9co" secondAttribute="top" constant="8" id="snN-Vp-0uA"/>
                             <constraint firstItem="9Db-CA-zEy" firstAttribute="leading" secondItem="sye-kJ-9co" secondAttribute="leading" constant="8" id="vuc-7Y-R4d"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sye-kJ-9co"/>
@@ -358,10 +361,13 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="pvZ-rO-ycI" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FkZ-Ar-BSW">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="FkZ-Ar-BSW">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="80r-Mv-K26">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="lHf-E0-oWW" kind="relationship" relationship="rootViewController" id="KeZ-DP-w37"/>
                     </connections>

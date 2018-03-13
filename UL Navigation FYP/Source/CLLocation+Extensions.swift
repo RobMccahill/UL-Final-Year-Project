@@ -29,6 +29,7 @@ public extension CLLocation {
     ///Translates distance in meters between two locations.
     ///Returns the result as the distance in latitude and distance in longitude.
     public func translation(toLocation location: CLLocation) -> LocationTranslation {
+        
         let inbetweenLocation = CLLocation(latitude: self.coordinate.latitude, longitude: location.coordinate.longitude)
         
         let distanceLatitude = location.distance(from: inbetweenLocation)
@@ -92,59 +93,12 @@ public extension CLLocationCoordinate2D {
         let distRadiansLat = distanceMeters.metersToLatitude() // earth radius in meters latitude
         let distRadiansLong = distanceMeters.metersToLongitude() // earth radius in meters longitude
         
-        let lat1 = self.latitude * .pi / 180
-        let lon1 = self.longitude * .pi / 180
+        let lat1 = self.latitude.toRadians()
+        let lon1 = self.longitude.toRadians()
         
         let lat2 = asin(sin(lat1) * cos(distRadiansLat) + cos(lat1) * sin(distRadiansLat) * cos(bearing))
         let lon2 = lon1 + atan2(sin(bearing) * sin(distRadiansLong) * cos(lat1), cos(distRadiansLong) - sin(lat1) * sin(lat2))
         
-        return CLLocationCoordinate2D(latitude: lat2 * 180 / Double.pi, longitude: lon2 * 180 / Double.pi)
+        return CLLocationCoordinate2D(latitude: lat2.toDegrees(), longitude: lon2.toDegrees())
     }
-    
-//    public func coordToMetres(toPoint point2: CLLocationCoordinate2D) -> (latitude: Double, longitude: Double) {
-//
-//        let lat1 = degreesToRadians(self.latitude);
-//        let lon1 = degreesToRadians(self.longitude);
-//
-//        let lat2 = degreesToRadians(point2.latitude);
-//        let lon2 = degreesToRadians(point2.longitude);
-//
-//        let dLon = lon2 - lon1;
-//
-//        let y = sin(dLon) * cos(lat2);
-//        let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
-//        var latDistance = atan2(y, x);
-//
-//        if(latDistance < 0.0) {
-//            latDistance += 2 * .pi;
-//        }
-//
-//        return (latDistance, latDistance)
-//    }
-    
-    public func bearingToCoord(coord : CLLocationCoordinate2D) -> Double {
-        
-        let lat1 = degreesToRadians(self.latitude)
-        let lon1 = degreesToRadians(self.longitude)
-        
-        let lat2 = degreesToRadians(coord.latitude)
-        let lon2 = degreesToRadians(coord.longitude)
-        
-        let dLon = lon2 - lon1
-        
-        let y = sin(dLon) * cos(lat2)
-        let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
-        var radiansBearing = atan2(y, x)
-        
-        radiansBearing = radiansToDegrees(radiansBearing)
-        
-        if(radiansBearing < 0.0) {
-            radiansBearing += 2 * .pi;
-        }
-        
-        return radiansBearing
-    }
-    
-    func degreesToRadians(_ degrees: Double) -> Double { return degrees * .pi / 180.0 }
-    func radiansToDegrees(_ radians: Double) -> Double { return radians * 180.0 / .pi }
 }

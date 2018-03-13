@@ -28,6 +28,7 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     var mapZoomed = false
     var routeStarted = false
     
+    var pathNodes = [SCNNode]()
     
     // MARK: - View Life Cycle
     
@@ -237,17 +238,25 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                     let coordsPointer = UnsafeMutablePointer<CLLocationCoordinate2D>.allocate(capacity: route.polyline.pointCount)
                     route.polyline.getCoordinates(coordsPointer, range: NSMakeRange(0, route.polyline.pointCount))
                     
+//                    let userLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 52.663661, longitude: -8.628479), altitude: 0)
+                    
                     var i = 0
-                    while(i < route.polyline.pointCount) {
-                        if(i > 0) {
-                            self.createPathBetweenPoints(pointA: coordsPointer[i-1], pointB: coordsPointer[i], toNode:self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
-                        }
+                    while(i < route.polyline.pointCount - 1) {
+                        self.createPathBetweenPoints(pointA: coordsPointer[i], pointB: coordsPointer[i+1], toNode:self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
                         
                         i += 1
                     }
                     
-                    //final connection required to link last point to destination
-//                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+//                    final connection required to link last point to destination
+                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+                    
+                    i = 0
+                    
+//                    while(i < pathNodes.count - 1) {
+//                        let pathNode = lineBetweenNodeA(nodeA: pathNodes[i], nodeB: pathNodes[i+1])
+//                        self.sceneView.scene.rootNode.addChildNode(pathNode)
+//                        i += 1
+//                    }
                 }
         }
     }
@@ -267,49 +276,55 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let locationA = CLLocation.init(coordinate: pointA, altitude: 0)
         let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
         
-//        let midpointCoord = getMidPointOfCoords(coordA: locationA.coordinate, coordB: locationB.coordinate)
-//
-//        let midpointLoc = CLLocation(coordinate: midpointCoord, altitude: 0)
-//        let coordOfMidpoint = getCoordsForPoint(origin: origin, point: midpointLoc)
-        let coordOfMidpoint = getCoordsForPoint(origin: origin, point: locationA)
-        let midpointPos = SCNVector3Make(coordOfMidpoint.x, height, coordOfMidpoint.z)
-        
+        let locationTransform = origin.translation(toLocation: locationA)
         let pathLength = CGFloat(locationB.distance(from: locationA))
         
-        let pathGeometry = SCNBox(width: 2.0, height: 1.0, length: pathLength, chamferRadius: 0.0)
-        pathGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
+        let pathNodeGeometry = SCNBox(width: 0.5, height: 0.5, length: pathLength, chamferRadius: 0)
+        pathNodeGeometry.materials.first?.diffuse.contents = UIColor.blue.withAlphaComponent(0.9)
+        let pathNode = SCNNode(geometry: pathNodeGeometry)
+        pathNode.position = SCNVector3Make(Float(locationTransform.longitudeTranslation),
+                                           Float(locationTransform.altitudeTranslation),
+                                           -Float(locationTransform.latitudeTranslation))
         
-        let pathNode = SCNNode(geometry: pathGeometry)
-        pathNode.position = midpointPos
-        parentNode.addChildNode(pathNode)
+        NSLog("X: \(locationTransform.latitudeTranslation) Z: \(locationTransform.longitudeTranslation)")
+        
+        pathNode.pivot = SCNMatrix4MakeTranslation(-(pathNode.position.x / 2),
+                                                   0,
+                                                   -(pathNode.position.z) / 2)
+        
+        self.sceneView.scene.rootNode.addChildNode(pathNode)
+        pathNodes.append(pathNode)
+
     }
     
-    func getCoordsForPoint(origin: CLLocation, point: CLLocation) -> (x : Float, z: Float) {
-        let dist = point.distance(from: origin)
-        let angle = origin.coordinate.bearingToCoord(coord: point.coordinate)
+    func lineBetweenNodeA(nodeA: SCNNode, nodeB: SCNNode) -> SCNNode {
+        let positions: [Float32] = [nodeA.position.x, nodeA.position.y, nodeA.position.z, nodeB.position.x, nodeB.position.y, nodeB.position.z]
+        let positionData = NSData(bytes: positions, length: MemoryLayout<Float32>.size*positions.count)
+        let indices: [Int32] = [0, 1]
+        let indexData = NSData(bytes: indices, length: MemoryLayout<Int32>.size * indices.count)
         
-        let pointACoordX = -Float(dist * cos(angle.degreesToRadians))
-        let pointACoordZ = -Float(dist * sin(angle.degreesToRadians))
+        let source = SCNGeometrySource(data: positionData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: indices.count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: MemoryLayout<Float32>.size * 3)
+        let element = SCNGeometryElement(data: indexData as Data, primitiveType: SCNGeometryPrimitiveType.line, primitiveCount: indices.count, bytesPerIndex: MemoryLayout<Int32>.size)
         
-        NSLog("Dist : (\(dist), Angle: \(angle))")
-        NSLog("(\(pointACoordX),\(pointACoordZ))")
-        return (pointACoordX, pointACoordZ)
+        let line = SCNGeometry(sources: [source], elements: [element])
+        line.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.9)
+        return SCNNode(geometry: line)
     }
     
     func getMidPointOfCoords(coordA: CLLocationCoordinate2D, coordB: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         
-        let dLon = (coordB.latitude - coordA.latitude).degreesToRadians
+        let dLon = (coordB.latitude - coordA.latitude).toRadians()
         
-        let lat1 = coordA.latitude.degreesToRadians
-        let lat2 = coordB.latitude.degreesToRadians
-        let lon1 = coordA.longitude.degreesToRadians
+        let lat1 = coordA.latitude.toRadians()
+        let lat2 = coordB.latitude.toRadians()
+        let lon1 = coordA.longitude.toRadians()
         
         let Bx = cos(lat2) * cos(dLon);
         let By = cos(lat2) * sin(dLon);
         let lat3 = atan2(sin(lat1) + sin(lat2), sqrt((cos(lat1) + Bx) * (cos(lat1) + Bx) + By * By));
         let lon3 = lon1 + atan2(By, cos(lat1) + Bx);
         
-        return CLLocationCoordinate2DMake(lat3.radiansToDegrees, lon3.radiansToDegrees)
+        return CLLocationCoordinate2DMake(lat3.toRadians(), lon3.toRadians())
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {

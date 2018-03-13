@@ -20,6 +20,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     var qrCodeFound = false
     let height = Float(-1.5)
     var detectedDataAnchor: ARAnchor?
+    var currentFrame : ARFrame?
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -31,6 +32,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
         sceneView.session.run(configuration)
         
         // Set a delegate to track the number of plane anchors for providing UI feedback.
+        sceneView.delegate = self
         sceneView.session.delegate = self
         
         /*
@@ -131,32 +133,55 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         
         // Only run one Vision request at a time
-        if self.processing && !qrCodeFound {
+        if self.processing || qrCodeFound {
             return
         }
         
         self.processing = true
         
+        self.currentFrame = frame
+        
         // Create a Barcode Detection Request
-        let request = VNDetectBarcodesRequest { (request, error) in
+        let request = VNDetectBarcodesRequest(completionHandler: completionHandler)
+        
+        // Process the request in the background
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                // Set it to recognize QR code only
+                request.symbologies = [.QR]
+
+                // Create a request handler using the captured image from the ARFrame
+                let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: frame.capturedImage,
+                                                                options: [:])
+
+                // Process the request
+                try imageRequestHandler.perform([request])
+            } catch {
+
+            }
+        }
+    }
+    
+    
+    func completionHandler(request: VNRequest, error: Error?) {
+        // Get the first result out of the results, if there are any
+        if let results = request.results, let result = results.first as? VNBarcodeObservation {
             
-            // Get the first result out of the results, if there are any
-            if let results = request.results, let result = results.first as? VNBarcodeObservation {
+            // Get the bounding box for the bar code and find the center
+            var rect = result.boundingBox
+            
+            // Flip coordinates
+            rect = rect.applying(CGAffineTransform(scaleX: 1, y: -1))
+            rect = rect.applying(CGAffineTransform(translationX: 0, y: 1))
+            
+            // Get center
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            
+            // Go back to the main thread
+            DispatchQueue.main.async {
                 
-                // Get the bounding box for the bar code and find the center
-                var rect = result.boundingBox
-                
-                // Flip coordinates
-                rect = rect.applying(CGAffineTransform(scaleX: 1, y: -1))
-                rect = rect.applying(CGAffineTransform(translationX: 0, y: 1))
-                
-                // Get center
-                let center = CGPoint(x: rect.midX, y: rect.midY)
-                
-                // Go back to the main thread
-                DispatchQueue.main.async {
-                    
-                    // Perform a hit test on the ARFrame to find a surface
+                // Perform a hit test on the ARFrame to find a surface
+                if let frame = self.currentFrame {
                     let hitTestResults = frame.hitTest(center, types: [.featurePoint/*, .estimatedHorizontalPlane, .existingPlane, .existingPlaneUsingExtent*/] )
                     
                     // If we have a result, process it
@@ -174,33 +199,83 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
                             self.sceneView.session.add(anchor: self.detectedDataAnchor!)
                         }
                         self.qrCodeFound = true
+                        if let payloadString = result.payloadStringValue {
+                            NSLog(payloadString)
+                            self.processQRPayload(payloadString)
+                        }
                     }
-                    
-                    // Set processing flag off
-                    self.processing = false
                 }
                 
-            } else {
+                
                 // Set processing flag off
                 self.processing = false
             }
+            
+        } else {
+            // Set processing flag off
+            self.processing = false
         }
-        
-        // Process the request in the background
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                // Set it to recognize QR code only
-                request.symbologies = [.QR]
-                
-                // Create a request handler using the captured image from the ARFrame
-                let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: frame.capturedImage,
-                                                                options: [:])
-                // Process the request
-                try imageRequestHandler.perform([request])
-            } catch {
-                
+    }
+    
+    func processQRPayload(_ payloadString: String) {
+        let pointsArray = payloadString.split(separator: ";")
+        var vectorArray = [SCNVector3]()
+        for vector in pointsArray {
+            
+            let values = vector.split(separator: ",")
+            if(values.count == 3) {
+                vectorArray.append(SCNVector3Make(Float(values[0]) ?? 0, Float(values[1]) ?? 0, Float(values[2]) ?? 0))
             }
         }
+        
+        createPath(coordinates: vectorArray)
+        
+    }
+    
+    func createPath(coordinates: [SCNVector3]) {
+        let startGeometry = SCNCylinder(radius: 0.1, height: 0.1)
+        let startNode = SCNNode(geometry: startGeometry)
+        startNode.position = coordinates[0]
+        
+        let destinationGeometry = SCNCylinder(radius: 0.1, height: 0.1)
+        let destinationNode = SCNNode(geometry: destinationGeometry)
+        destinationNode.position = coordinates[coordinates.count - 1]
+        
+        self.sceneView.scene.rootNode.addChildNode(startNode)
+        self.sceneView.scene.rootNode.addChildNode(destinationNode)
+        
+        var index = 0
+        for coordinate in coordinates {
+            if(index != 0 || index != coordinates.count - 1) {
+                let posGeometry = SCNCylinder(radius: 0.1, height: 0.1)
+                let posNode = SCNNode(geometry: posGeometry)
+                posNode.position = coordinate
+                
+                self.sceneView.scene.rootNode.addChildNode(posNode)
+            }
+            index += 1
+        }
+        
+        
+    }
+    
+    
+    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        
+        // If this is our anchor, create a node
+        if self.detectedDataAnchor?.identifier == anchor.identifier {
+            
+            let qrGeometry = SCNBox(width: 0.08, height: 0.08, length: 0.01, chamferRadius: 0)
+            qrGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.5)
+            let qrNode = SCNNode(geometry: qrGeometry)
+            
+            // Set its position based off the anchor
+            qrNode.transform = SCNMatrix4(anchor.transform)
+            
+            return qrNode
+        }
+        
+        return nil
     }
     
     @IBAction func backButtonTapped(_ sender: Any) {

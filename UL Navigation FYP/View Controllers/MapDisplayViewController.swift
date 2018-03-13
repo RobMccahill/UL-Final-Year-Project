@@ -24,7 +24,7 @@ class MapDisplayViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         locationManager.delegate = self
         handleMapSearchDelegate = self
         
