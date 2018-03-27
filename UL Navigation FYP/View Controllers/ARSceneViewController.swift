@@ -277,20 +277,30 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
         
         let locationTransform = origin.translation(toLocation: locationA)
+        let location2Transform = origin.translation(toLocation: locationB)
         let pathLength = CGFloat(locationB.distance(from: locationA))
+        
+        //y i k e s
+        let midpointTransform = SCNVector3Make(Float((locationTransform.longitudeTranslation +
+                                                      location2Transform.longitudeTranslation) / 2),
+                                               Float((locationTransform.altitudeTranslation +
+                                                      location2Transform.altitudeTranslation) / 2),
+                                               -Float((locationTransform.latitudeTranslation +
+                                                       location2Transform.latitudeTranslation) / 2))
         
         let pathNodeGeometry = SCNBox(width: 0.5, height: 0.5, length: pathLength, chamferRadius: 0)
         pathNodeGeometry.materials.first?.diffuse.contents = UIColor.blue.withAlphaComponent(0.9)
         let pathNode = SCNNode(geometry: pathNodeGeometry)
-        pathNode.position = SCNVector3Make(Float(locationTransform.longitudeTranslation),
-                                           Float(locationTransform.altitudeTranslation),
-                                           -Float(locationTransform.latitudeTranslation))
+        pathNode.position = midpointTransform
         
+        let locationDestVector = SCNVector3Make(Float(location2Transform.longitudeTranslation),
+                                                Float(location2Transform.altitudeTranslation),
+                                                -Float(location2Transform.latitudeTranslation))
+        pathNode.look(at: locationDestVector)
         NSLog("X: \(locationTransform.latitudeTranslation) Z: \(locationTransform.longitudeTranslation)")
-        
-        pathNode.pivot = SCNMatrix4MakeTranslation(-(pathNode.position.x / 2),
-                                                   0,
-                                                   -(pathNode.position.z) / 2)
+//        pathNode.pivot = SCNMatrix4MakeTranslation(-(pathNode.position.x / 2),
+//                                                   0,
+//                                                   -(pathNode.position.z) / 2)
         
         self.sceneView.scene.rootNode.addChildNode(pathNode)
         pathNodes.append(pathNode)

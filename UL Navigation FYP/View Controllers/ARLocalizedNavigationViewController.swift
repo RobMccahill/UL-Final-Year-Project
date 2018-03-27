@@ -21,6 +21,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     let height = Float(-1.5)
     var detectedDataAnchor: ARAnchor?
     var currentFrame : ARFrame?
+    var qrFoundCount = 0
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -133,7 +134,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         
         // Only run one Vision request at a time
-        if self.processing || qrCodeFound {
+        if self.processing {
             return
         }
         
@@ -142,7 +143,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
         self.currentFrame = frame
         
         // Create a Barcode Detection Request
-        let request = VNDetectBarcodesRequest(completionHandler: completionHandler)
+        let request = VNDetectBarcodesRequest(completionHandler: processQRCodeRequest)
         
         // Process the request in the background
         DispatchQueue.global(qos: .userInitiated).async {
@@ -157,13 +158,13 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
                 // Process the request
                 try imageRequestHandler.perform([request])
             } catch {
-
+                NSLog("Failed barcode request")
             }
         }
     }
     
     
-    func completionHandler(request: VNRequest, error: Error?) {
+    func processQRCodeRequest(request: VNRequest, error: Error?) {
         // Get the first result out of the results, if there are any
         if let results = request.results, let result = results.first as? VNBarcodeObservation {
             
@@ -188,6 +189,9 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
                     if let hitTestResult = hitTestResults.first {
                         
                         // If we already have an anchor, update the position of the attached node
+                        if(self.qrFoundCount < 32) {
+                            
+                        }
                         if let detectedDataAnchor = self.detectedDataAnchor,
                             let node = self.sceneView.node(for: detectedDataAnchor) {
                             
@@ -198,11 +202,13 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
                             self.detectedDataAnchor = ARAnchor(transform: hitTestResult.worldTransform)
                             self.sceneView.session.add(anchor: self.detectedDataAnchor!)
                         }
-                        self.qrCodeFound = true
                         if let payloadString = result.payloadStringValue {
-                            NSLog(payloadString)
-                            self.processQRPayload(payloadString)
+                            if(!self.qrCodeFound) {
+                                NSLog(payloadString)
+                                self.processQRPayload(payloadString)
+                            }
                         }
+                        self.qrCodeFound = true
                     }
                 }
                 
@@ -218,17 +224,27 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     }
     
     func processQRPayload(_ payloadString: String) {
-        let pointsArray = payloadString.split(separator: ";")
-        var vectorArray = [SCNVector3]()
-        for vector in pointsArray {
+        if(payloadString.starts(with: "http")) {
+            //TODO: code for loading request here
+        } else {
+            let pointsArray = payloadString.split(separator: ";")
             
-            let values = vector.split(separator: ",")
-            if(values.count == 3) {
-                vectorArray.append(SCNVector3Make(Float(values[0]) ?? 0, Float(values[1]) ?? 0, Float(values[2]) ?? 0))
+            guard pointsArray.count > 0 else {
+                NSLog("Invalid payload format")
+                return
             }
+            var vectorArray = [SCNVector3]()
+            for vector in pointsArray {
+                
+                let values = vector.split(separator: ",")
+                if(values.count == 3) {
+                    vectorArray.append(SCNVector3Make(Float(values[0]) ?? 0, Float(values[1]) ?? 0, Float(values[2]) ?? 0))
+                }
+            }
+            
+            createPath(coordinates: vectorArray)
         }
         
-        createPath(coordinates: vectorArray)
         
     }
     
@@ -265,7 +281,7 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
         // If this is our anchor, create a node
         if self.detectedDataAnchor?.identifier == anchor.identifier {
             
-            let qrGeometry = SCNBox(width: 0.08, height: 0.08, length: 0.01, chamferRadius: 0)
+            let qrGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 0)
             qrGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.5)
             let qrNode = SCNNode(geometry: qrGeometry)
             
