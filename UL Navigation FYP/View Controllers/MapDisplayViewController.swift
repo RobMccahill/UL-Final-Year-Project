@@ -52,6 +52,11 @@ class MapDisplayViewController: UIViewController {
     }
     */
     
+    @IBAction func backButtonTapped(_ sender: UIButton) {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    
     
 
 }
@@ -157,7 +162,7 @@ extension MapDisplayViewController : MKMapViewDelegate {
                 }
                 guard let unwrappedResponse = response else { return }
                 
-                let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARSceneViewController
+                let arSceneVC = self.storyboard?.instantiateViewController(withIdentifier: "ARSceneVC") as! ARMapNavigationViewController
                 arSceneVC.directions = unwrappedResponse
                 arSceneVC.destinationCoord = selectedPin.coordinate
                 self.navigationController?.pushViewController(arSceneVC, animated: true)
@@ -166,6 +171,9 @@ extension MapDisplayViewController : MKMapViewDelegate {
             
         }
     }
+    
+    
+    
 }
 
 extension MapDisplayViewController : CLLocationManagerDelegate {

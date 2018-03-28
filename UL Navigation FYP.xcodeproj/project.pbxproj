@@ -14,10 +14,10 @@
 		D4848724203DBA8A00A50C88 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D4848723203DBA8A00A50C88 /* readme.md */; };
 		D4848727203DC0F500A50C88 /* Double+Radians.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4848726203DC0F500A50C88 /* Double+Radians.swift */; };
 		D4848729203DD94600A50C88 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4848728203DD94600A50C88 /* CLLocation+Extensions.swift */; };
-		D48AB3DB20447F7100F3D5E1 /* ARLocalizedNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AB3DA20447F7100F3D5E1 /* ARLocalizedNavigationViewController.swift */; };
+		D48AB3DB20447F7100F3D5E1 /* ARQRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AB3DA20447F7100F3D5E1 /* ARQRViewController.swift */; };
 		D48AB3DF2044818B00F3D5E1 /* ChooseOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AB3DE2044818B00F3D5E1 /* ChooseOptionViewController.swift */; };
 		D4AE485C2021F660008CA294 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE485B2021F660008CA294 /* AppDelegate.swift */; };
-		D4AE48602021F660008CA294 /* ARSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE485F2021F660008CA294 /* ARSceneViewController.swift */; };
+		D4AE48602021F660008CA294 /* ARMapNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE485F2021F660008CA294 /* ARMapNavigationViewController.swift */; };
 		D4AE48632021F660008CA294 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4AE48612021F660008CA294 /* Main.storyboard */; };
 		D4AE48652021F660008CA294 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4AE48642021F660008CA294 /* Assets.xcassets */; };
 		D4AE48682021F660008CA294 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4AE48662021F660008CA294 /* LaunchScreen.storyboard */; };
@@ -31,11 +31,11 @@
 		D4848723203DBA8A00A50C88 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		D4848726203DC0F500A50C88 /* Double+Radians.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Radians.swift"; sourceTree = "<group>"; };
 		D4848728203DD94600A50C88 /* CLLocation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.swift"; sourceTree = "<group>"; };
-		D48AB3DA20447F7100F3D5E1 /* ARLocalizedNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARLocalizedNavigationViewController.swift; sourceTree = "<group>"; };
+		D48AB3DA20447F7100F3D5E1 /* ARQRViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARQRViewController.swift; sourceTree = "<group>"; };
 		D48AB3DE2044818B00F3D5E1 /* ChooseOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseOptionViewController.swift; sourceTree = "<group>"; };
 		D4AE48582021F660008CA294 /* UL Navigation FYP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UL Navigation FYP.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AE485B2021F660008CA294 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D4AE485F2021F660008CA294 /* ARSceneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSceneViewController.swift; sourceTree = "<group>"; };
+		D4AE485F2021F660008CA294 /* ARMapNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMapNavigationViewController.swift; sourceTree = "<group>"; };
 		D4AE48622021F660008CA294 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4AE48642021F660008CA294 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4AE48672021F660008CA294 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -56,9 +56,9 @@
 		D40AFC2020221A52003344CE /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				D4AE485F2021F660008CA294 /* ARSceneViewController.swift */,
+				D4AE485F2021F660008CA294 /* ARMapNavigationViewController.swift */,
 				D40AFC2120221A83003344CE /* MapDisplayViewController.swift */,
-				D48AB3DA20447F7100F3D5E1 /* ARLocalizedNavigationViewController.swift */,
+				D48AB3DA20447F7100F3D5E1 /* ARQRViewController.swift */,
 				D48AB3DE2044818B00F3D5E1 /* ChooseOptionViewController.swift */,
 			);
 			path = "View Controllers";
@@ -134,7 +134,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				TargetAttributes = {
 					D4AE48572021F660008CA294 = {
 						CreatedOnToolsVersion = 9.2;
@@ -184,10 +184,10 @@
 				D42A03BE2045E19200C7AD70 /* MatrixHelper.swift in Sources */,
 				D42A03C02045E2A700C7AD70 /* SCNNode+Extensions.swift in Sources */,
 				D40AFC2220221A83003344CE /* MapDisplayViewController.swift in Sources */,
-				D4AE48602021F660008CA294 /* ARSceneViewController.swift in Sources */,
+				D4AE48602021F660008CA294 /* ARMapNavigationViewController.swift in Sources */,
 				D48AB3DF2044818B00F3D5E1 /* ChooseOptionViewController.swift in Sources */,
 				D4AE485C2021F660008CA294 /* AppDelegate.swift in Sources */,
-				D48AB3DB20447F7100F3D5E1 /* ARLocalizedNavigationViewController.swift in Sources */,
+				D48AB3DB20447F7100F3D5E1 /* ARQRViewController.swift in Sources */,
 				D42A03C22045E33200C7AD70 /* SCNVector3+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,6 +228,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -235,6 +236,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -285,6 +287,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -292,6 +295,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -11,7 +11,7 @@ import ARKit
 import MapKit
 import QuartzCore
 
-class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CLLocationManagerDelegate {
+class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CLLocationManagerDelegate {
     // MARK: - IBOutlets
     
     @IBOutlet weak var sessionInfoView: UIVisualEffectView!
@@ -163,6 +163,8 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         case .limited(.initializing):
             message = "Initializing AR session."
             
+        case .limited(.relocalizing):
+            message = "Relocalizing..."
         }
         
         sessionInfoLabel.text = message
@@ -172,6 +174,17 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     private func resetTracking() {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    private func resetTrackingWithWorldAlignment(alignment: ARConfiguration.WorldAlignment) {
+        let configuration = ARWorldTrackingConfiguration()
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+            configuration.planeDetection = .horizontal
+        }
+        configuration.worldAlignment = alignment
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
@@ -238,8 +251,6 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                     let coordsPointer = UnsafeMutablePointer<CLLocationCoordinate2D>.allocate(capacity: route.polyline.pointCount)
                     route.polyline.getCoordinates(coordsPointer, range: NSMakeRange(0, route.polyline.pointCount))
                     
-//                    let userLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 52.663661, longitude: -8.628479), altitude: 0)
-                    
                     var i = 0
                     while(i < route.polyline.pointCount - 1) {
                         self.createPathBetweenPoints(pointA: coordsPointer[i], pointB: coordsPointer[i+1], toNode:self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
@@ -249,14 +260,6 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                     
 //                    final connection required to link last point to destination
                     self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
-                    
-                    i = 0
-                    
-//                    while(i < pathNodes.count - 1) {
-//                        let pathNode = lineBetweenNodeA(nodeA: pathNodes[i], nodeB: pathNodes[i+1])
-//                        self.sceneView.scene.rootNode.addChildNode(pathNode)
-//                        i += 1
-//                    }
                 }
         }
     }
@@ -296,45 +299,13 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let locationDestVector = SCNVector3Make(Float(location2Transform.longitudeTranslation),
                                                 Float(location2Transform.altitudeTranslation),
                                                 -Float(location2Transform.latitudeTranslation))
+        
         pathNode.look(at: locationDestVector)
         NSLog("X: \(locationTransform.latitudeTranslation) Z: \(locationTransform.longitudeTranslation)")
-//        pathNode.pivot = SCNMatrix4MakeTranslation(-(pathNode.position.x / 2),
-//                                                   0,
-//                                                   -(pathNode.position.z) / 2)
         
         self.sceneView.scene.rootNode.addChildNode(pathNode)
         pathNodes.append(pathNode)
 
-    }
-    
-    func lineBetweenNodeA(nodeA: SCNNode, nodeB: SCNNode) -> SCNNode {
-        let positions: [Float32] = [nodeA.position.x, nodeA.position.y, nodeA.position.z, nodeB.position.x, nodeB.position.y, nodeB.position.z]
-        let positionData = NSData(bytes: positions, length: MemoryLayout<Float32>.size*positions.count)
-        let indices: [Int32] = [0, 1]
-        let indexData = NSData(bytes: indices, length: MemoryLayout<Int32>.size * indices.count)
-        
-        let source = SCNGeometrySource(data: positionData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: indices.count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: MemoryLayout<Float32>.size * 3)
-        let element = SCNGeometryElement(data: indexData as Data, primitiveType: SCNGeometryPrimitiveType.line, primitiveCount: indices.count, bytesPerIndex: MemoryLayout<Int32>.size)
-        
-        let line = SCNGeometry(sources: [source], elements: [element])
-        line.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.9)
-        return SCNNode(geometry: line)
-    }
-    
-    func getMidPointOfCoords(coordA: CLLocationCoordinate2D, coordB: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        
-        let dLon = (coordB.latitude - coordA.latitude).toRadians()
-        
-        let lat1 = coordA.latitude.toRadians()
-        let lat2 = coordB.latitude.toRadians()
-        let lon1 = coordA.longitude.toRadians()
-        
-        let Bx = cos(lat2) * cos(dLon);
-        let By = cos(lat2) * sin(dLon);
-        let lat3 = atan2(sin(lat1) + sin(lat2), sqrt((cos(lat1) + Bx) * (cos(lat1) + Bx) + By * By));
-        let lon3 = lon1 + atan2(By, cos(lat1) + Bx);
-        
-        return CLLocationCoordinate2DMake(lat3.toRadians(), lon3.toRadians())
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -361,9 +332,26 @@ class ARSceneViewController: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     //MARK CLLocationManagerDelegate methods
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     }
+    
+    @IBAction func orientationButtonTapped(_ sender: UIButton) {
+        if let alignment = self.sceneView.session.configuration?.worldAlignment {
+            
+            switch alignment {
+            case .gravity:
+                resetTrackingWithWorldAlignment(alignment: .gravityAndHeading)
+                break
+            case .gravityAndHeading:
+                resetTrackingWithWorldAlignment(alignment: .gravity)
+            default:
+                NSLog("Unassigned alignment")
+                break
+            }
+        }
+    }
+    
 }
 
-extension ARSceneViewController : MKMapViewDelegate {
+extension ARMapNavigationViewController : MKMapViewDelegate {
     func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
         if(!mapZoomed) {
             let annotation = MKPointAnnotation()

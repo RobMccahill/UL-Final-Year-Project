@@ -9,7 +9,7 @@ import Foundation
 import ARKit
 import Vision
 
-class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AVCaptureMetadataOutputObjectsDelegate {
+class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AVCaptureMetadataOutputObjectsDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet var sessionInfoLabel: UILabel!
@@ -26,7 +26,11 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     override func viewDidAppear(_ animated: Bool) {
         
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+            configuration.planeDetection = .horizontal
+        }
         configuration.isLightEstimationEnabled = true;
         configuration.worldAlignment = .gravity
         //        sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
@@ -117,6 +121,8 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
         case .limited(.initializing):
             message = "Initializing AR Session"
             
+        case .limited(.relocalizing):
+            message = "Relocalizing..."
         }
         
         sessionInfoLabel.text = message
@@ -125,7 +131,22 @@ class ARLocalizedNavigationController: UIViewController, ARSCNViewDelegate, ARSe
     
     private func resetTracking() {
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+           configuration.planeDetection = .horizontal
+        }
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    private func resetTrackingWithWorldAlignment(alignment: ARConfiguration.WorldAlignment) {
+        let configuration = ARWorldTrackingConfiguration()
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+            configuration.planeDetection = .horizontal
+        }
+        configuration.worldAlignment = alignment
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
