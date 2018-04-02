@@ -31,9 +31,11 @@ class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         } else {
             configuration.planeDetection = .horizontal
         }
+        
         configuration.isLightEstimationEnabled = true;
         configuration.worldAlignment = .gravity
-        //        sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
+        
+        sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
         sceneView.session.run(configuration)
         
         // Set a delegate to track the number of plane anchors for providing UI feedback.
@@ -57,100 +59,73 @@ class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.session.pause()
     }
     
-    @IBAction func backButtonPressed(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
-    }
+//    /// - Tag: PlaceARContent
+//    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+//        // Place content only for anchors found by plane detection.
+//        if let planeAnchor = anchor as? ARPlaneAnchor {
+//            // Create a SceneKit plane to visualize the plane anchor using its position and extent.
+//            let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
+//            let planeNode = SCNNode(geometry: plane)
+//            planeNode.simdPosition = float3(planeAnchor.center.x, 0, planeAnchor.center.z)
+//
+//            // `SCNPlane` is vertically oriented in its local coordinate space, so
+//            // rotate the plane to match the horizontal orientation of `ARPlaneAnchor`.
+//            planeNode.eulerAngles.x = -.pi / 2
+//
+//            // Make the plane visualization semitransparent to clearly show real-world placement.
+//            planeNode.opacity = 0.25
+//
+//            // Add the plane visualization to the ARKit-managed node so that it tracks
+//            // changes in the plane anchor as plane estimation continues.
+//            node.addChildNode(planeNode)
+//        }
+//        else if self.detectedDataAnchor?.identifier == anchor.identifier {
+//            let qrGeometry = SCNBox(width: 05, height: 0.05, length: 0.01, chamferRadius: 0)
+//            qrGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.5)
+//            let qrNode = SCNNode(geometry: qrGeometry)
+//
+//            // Set its position based off the anchor
+//            qrNode.transform = SCNMatrix4(anchor.transform)
+//
+//            node.addChildNode(qrNode)
+//        }
+//
+//
+//    }
+//
+//    /// - Tag: UpdateARContent
+//    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+//        // Update content only for plane anchors and nodes matching the setup created in `renderer(_:didAdd:for:)`.
+//        if let planeAnchor = anchor as? ARPlaneAnchor,
+//            let planeNode = node.childNodes.first,
+//            let plane = planeNode.geometry as? SCNPlane {
+//
+//            // Plane estimation may shift the center of a plane relative to its anchor's transform.
+//            planeNode.simdPosition = float3(planeAnchor.center.x, 0, planeAnchor.center.z)
+//
+//            // Plane estimation may also extend planes, or remove one plane to merge its extent into another.
+//            plane.width = CGFloat(planeAnchor.extent.x)
+//            plane.height = CGFloat(planeAnchor.extent.z)
+//        }
+//    }
     
-    // MARK: - ARSessionDelegate
-    
-    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-        guard let frame = session.currentFrame else { return }
-        updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
-    }
-    
-    func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
-        guard let frame = session.currentFrame else { return }
-        updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
-    }
-    
-    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-        updateSessionInfoLabel(for: session.currentFrame!, trackingState: camera.trackingState)
-    }
-    
-    // MARK: - ARSessionObserver
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay.
-        sessionInfoLabel.text = "Session was interrupted"
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required.
-        sessionInfoLabel.text = "Session interruption ended"
-        resetTracking()
-    }
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user.
-        sessionInfoLabel.text = "Session failed: \(error.localizedDescription)"
-        resetTracking()
-    }
-    
-    // MARK: - Private methods
-    
-    private func updateSessionInfoLabel(for frame: ARFrame, trackingState: ARCamera.TrackingState) {
-        // Update the UI to provide feedback on the state of the AR experience.
-        let message: String
-        
-        switch trackingState {
-        case .normal:
-            message = ""
-//            if(!routeStarted) {
-//                startRouteButton.isHidden = false
-//            }
-            
-        case .notAvailable:
-            message = "Tracking unavailable."
-            
-        case .limited(.excessiveMotion):
-            message = "Too much movement!"
-            
-        case .limited(.insufficientFeatures):
-            message = "Low light"
-            
-        case .limited(.initializing):
-            message = "Initializing AR Session"
-            
-        case .limited(.relocalizing):
-            message = "Relocalizing..."
-        }
-        
-        sessionInfoLabel.text = message
-        sessionInfoView.isHidden = message.isEmpty
-    }
-    
-    private func resetTracking() {
-        let configuration = ARWorldTrackingConfiguration()
-        if #available(iOS 11.3, *) {
-            configuration.planeDetection = [.horizontal, .vertical]
+    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+
+        // If this is our anchor, create a node
+        if self.detectedDataAnchor?.identifier == anchor.identifier {
+
+            let qrGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 0)
+            qrGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.5)
+            let qrNode = SCNNode(geometry: qrGeometry)
+
+            // Set its position based off the anchor
+            qrNode.transform = SCNMatrix4(anchor.transform)
+
+            return qrNode
         } else {
-           configuration.planeDetection = .horizontal
+          return nil
         }
-        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
-    
-    private func resetTrackingWithWorldAlignment(alignment: ARConfiguration.WorldAlignment) {
-        let configuration = ARWorldTrackingConfiguration()
-        if #available(iOS 11.3, *) {
-            configuration.planeDetection = [.horizontal, .vertical]
-        } else {
-            configuration.planeDetection = .horizontal
-        }
-        configuration.worldAlignment = alignment
-        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-    }
-    
-    
     
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         
@@ -171,11 +146,11 @@ class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             do {
                 // Set it to recognize QR code only
                 request.symbologies = [.QR]
-
+                
                 // Create a request handler using the captured image from the ARFrame
                 let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: frame.capturedImage,
                                                                 options: [:])
-
+                
                 // Process the request
                 try imageRequestHandler.perform([request])
             } catch {
@@ -183,7 +158,6 @@ class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             }
         }
     }
-    
     
     func processQRCodeRequest(request: VNRequest, error: Error?) {
         // Get the first result out of the results, if there are any
@@ -296,23 +270,90 @@ class ARQRViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         
     }
     
+    // MARK: - ARSessionDelegate
     
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        guard let frame = session.currentFrame else { return }
+        updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
+    }
+    
+    func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+        guard let frame = session.currentFrame else { return }
+        updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
+    }
+    
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        updateSessionInfoLabel(for: session.currentFrame!, trackingState: camera.trackingState)
+    }
+    
+    // MARK: - ARSessionObserver
+    
+    func sessionWasInterrupted(_ session: ARSession) {
+        // Inform the user that the session has been interrupted, for example, by presenting an overlay.
+        sessionInfoLabel.text = "Session was interrupted"
+    }
+    
+    func sessionInterruptionEnded(_ session: ARSession) {
+        // Reset tracking and/or remove existing anchors if consistent tracking is required.
+        sessionInfoLabel.text = "Session interruption ended"
+        resetTracking()
+    }
+    
+    func session(_ session: ARSession, didFailWithError error: Error) {
+        // Present an error message to the user.
+        sessionInfoLabel.text = "Session failed: \(error.localizedDescription)"
+        resetTracking()
+    }
+    
+    // MARK: - Private methods
+    
+    private func updateSessionInfoLabel(for frame: ARFrame, trackingState: ARCamera.TrackingState) {
+        // Update the UI to provide feedback on the state of the AR experience.
+        let message: String
         
-        // If this is our anchor, create a node
-        if self.detectedDataAnchor?.identifier == anchor.identifier {
+        switch trackingState {
+        case .normal:
+            message = ""
             
-            let qrGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 0)
-            qrGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.5)
-            let qrNode = SCNNode(geometry: qrGeometry)
+        case .notAvailable:
+            message = "Tracking unavailable."
             
-            // Set its position based off the anchor
-            qrNode.transform = SCNMatrix4(anchor.transform)
+        case .limited(.excessiveMotion):
+            message = "Too much movement!"
             
-            return qrNode
+        case .limited(.insufficientFeatures):
+            message = "Low light"
+            
+        case .limited(.initializing):
+            message = "Initializing AR Session"
+            
+        case .limited(.relocalizing):
+            message = "Relocalizing..."
         }
         
-        return nil
+        sessionInfoLabel.text = message
+        sessionInfoView.isHidden = message.isEmpty
+    }
+    
+    private func resetTracking() {
+        let configuration = ARWorldTrackingConfiguration()
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+           configuration.planeDetection = .horizontal
+        }
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    private func resetTrackingWithWorldAlignment(alignment: ARConfiguration.WorldAlignment) {
+        let configuration = ARWorldTrackingConfiguration()
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+            configuration.planeDetection = .horizontal
+        }
+        configuration.worldAlignment = alignment
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
     @IBAction func backButtonTapped(_ sender: Any) {

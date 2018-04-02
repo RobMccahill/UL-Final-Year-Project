@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D404CD9E206C02C200149FCC /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D404CD9D206C02C200149FCC /* CacheManager.swift */; };
 		D40AFC2220221A83003344CE /* MapDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40AFC2120221A83003344CE /* MapDisplayViewController.swift */; };
 		D42A03BE2045E19200C7AD70 /* MatrixHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42A03BD2045E19200C7AD70 /* MatrixHelper.swift */; };
 		D42A03C02045E2A700C7AD70 /* SCNNode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42A03BF2045E2A700C7AD70 /* SCNNode+Extensions.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D404CD9D206C02C200149FCC /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		D40AFC2120221A83003344CE /* MapDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDisplayViewController.swift; sourceTree = "<group>"; };
 		D42A03BD2045E19200C7AD70 /* MatrixHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixHelper.swift; sourceTree = "<group>"; };
 		D42A03BF2045E2A700C7AD70 /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
@@ -53,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D404CD9C206C02B100149FCC /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				D404CD9D206C02C200149FCC /* CacheManager.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		D40AFC2020221A52003344CE /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +106,7 @@
 		D4AE485A2021F660008CA294 /* UL Navigation FYP */ = {
 			isa = PBXGroup;
 			children = (
+				D404CD9C206C02B100149FCC /* Persistence */,
 				D4AE485B2021F660008CA294 /* AppDelegate.swift */,
 				D40AFC2020221A52003344CE /* View Controllers */,
 				D4848725203DC0C900A50C88 /* Source */,
@@ -185,6 +196,7 @@
 				D42A03C02045E2A700C7AD70 /* SCNNode+Extensions.swift in Sources */,
 				D40AFC2220221A83003344CE /* MapDisplayViewController.swift in Sources */,
 				D4AE48602021F660008CA294 /* ARMapNavigationViewController.swift in Sources */,
+				D404CD9E206C02C200149FCC /* CacheManager.swift in Sources */,
 				D48AB3DF2044818B00F3D5E1 /* ChooseOptionViewController.swift in Sources */,
 				D4AE485C2021F660008CA294 /* AppDelegate.swift in Sources */,
 				D48AB3DB20447F7100F3D5E1 /* ARQRViewController.swift in Sources */,
@@ -264,7 +276,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -317,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

@@ -28,6 +28,8 @@ class MapDisplayViewController: UIViewController {
         locationManager.delegate = self
         handleMapSearchDelegate = self
         
+        
+        
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             locationManager.startUpdatingLocation()
         } else {
@@ -52,13 +54,15 @@ class MapDisplayViewController: UIViewController {
     }
     */
     
+    
+    @IBAction func userLocationButtonTapped(_ sender: UIButton) {
+        let mapRegion = MKCoordinateRegion(center: mapView.userLocation.coordinate, span: mapView.region.span)
+        mapView.setRegion(mapRegion, animated: true)
+    }
+    
     @IBAction func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
-    
-    
-    
-
 }
 
 extension MapDisplayViewController : UISearchBarDelegate {

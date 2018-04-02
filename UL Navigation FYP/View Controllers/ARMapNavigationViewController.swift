@@ -27,6 +27,8 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     var destinationCoord : CLLocationCoordinate2D?
     var mapZoomed = false
     var routeStarted = false
+    var rotateActive = false
+    var alignActive = false
     
     var pathNodes = [SCNNode]()
     
@@ -190,55 +192,13 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     
     @IBAction func createPath(_ sender: Any) {
         
-//        let userGeometry = SCNCylinder(radius: 0.1, height: 0.1)
-//        userGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
-//
-//        let userNode = SCNNode(geometry:userGeometry)
-//        userNode.position = SCNVector3Make(0, height, 0)
-//        self.sceneView.scene.rootNode.addChildNode(userNode)
-//
-//        let firstGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
-//        firstGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-//
-//        let firstPathNode = SCNNode(geometry: firstGeometry)
-//        firstPathNode.position = SCNVector3Make(0, 0, Float(-firstGeometry.length) / 2)
-//        userNode.addChildNode(firstPathNode)
-//
-//        let secondGeometry = SCNBox(width: 0.1, height: 0.1, length: 3.4, chamferRadius: 0.0)
-//        secondGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-//
-//        let secondPathNode = SCNNode(geometry: secondGeometry)
-//        secondPathNode.position = SCNVector3Make(Float(-firstGeometry.length) / 2, 0, Float(-firstGeometry.length))
-//
-//        secondPathNode.eulerAngles.y = .pi / 2
-//
-//        userNode.addChildNode(secondPathNode)
-//
-//        let thirdGeometry = SCNBox(width: 0.1, height: 0.1, length: 1, chamferRadius: 0.0)
-//        thirdGeometry.firstMaterial?.diffuse.contents = UIColor.blue.withAlphaComponent(0.8)
-//
-//        let thirdPathNode = SCNNode(geometry: thirdGeometry)
-//        thirdPathNode.position = SCNVector3Make(Float(secondPathNode.worldPosition.x) - Float(secondGeometry.length) / 2, 0, Float(-secondGeometry.length) - Float(thirdGeometry.length) / 2)
-//
-//        userNode.addChildNode(thirdPathNode)
-//
-//        let destinationGeometry = SCNCylinder(radius: 0.1, height: 0.1)
-//        destinationGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
-//
-//        let destinationNode = SCNNode(geometry: destinationGeometry)
-//        destinationNode.position = SCNVector3Make(thirdPathNode.position.x, 0, thirdPathNode.position.z - Float(thirdGeometry.length) + 0.4)
-//
-//        userNode.addChildNode(destinationNode)
-//
-//        userNode.rotation = SCNVector4Make(0, 1, 0, Float(toRadians(degrees: 150)))
-        
         //north reference
-        let northGeometry = SCNSphere(radius: 1.0)
-        northGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(1.0)
-        let northNode = SCNNode(geometry: northGeometry)
-        northNode.position = SCNVector3Make(0, 0, -50)
-        
-        sceneView.scene.rootNode.addChildNode(northNode)
+//        let northGeometry = SCNSphere(radius: 1.0)
+//        northGeometry.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(1.0)
+//        let northNode = SCNNode(geometry: northGeometry)
+//        northNode.position = SCNVector3Make(0, 0, -50)
+//
+//        sceneView.scene.rootNode.addChildNode(northNode)
         
         startRouteButton.isHidden = true
         routeStarted = true
@@ -259,7 +219,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
                     }
                     
 //                    final connection required to link last point to destination
-                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+//                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
                 }
         }
     }
@@ -268,13 +228,13 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
                                  pointB : CLLocationCoordinate2D,
                                  toNode parentNode : SCNNode,
                                  withOrigin origin : CLLocation) {
-        
-        let annotationA = MKPointAnnotation()
-        let annotationB = MKPointAnnotation()
-        annotationA.coordinate = pointA
-        annotationB.coordinate = pointB
-        
-        self.mapView.addAnnotations([annotationA, annotationB])
+//        reference of map points
+//        let annotationA = MKPointAnnotation()
+//        let annotationB = MKPointAnnotation()
+//        annotationA.coordinate = pointA
+//        annotationB.coordinate = pointB
+//
+//        self.mapView.addAnnotations([annotationA, annotationB])
         
         let locationA = CLLocation.init(coordinate: pointA, altitude: 0)
         let locationB = CLLocation.init(coordinate: pointB, altitude: 0)
@@ -347,6 +307,30 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
                 break
             }
         }
+    }
+    
+    @IBAction func alignButtonTapped(_ sender: UIButton) {
+        if(!alignActive) {
+            sender.imageView?.backgroundColor = .blue
+            sender.imageView?.tintColor = .white
+        } else {
+            sender.imageView?.backgroundColor = .white
+            sender.imageView?.tintColor = .black
+        }
+        
+        alignActive = !alignActive
+    }
+    
+    @IBAction func rotateButtonTapped(_ sender: UIButton) {
+        if(!rotateActive) {
+            sender.imageView?.backgroundColor = .blue
+            sender.imageView?.tintColor = .white
+        } else {
+            sender.imageView?.backgroundColor = .white
+            sender.imageView?.tintColor = .black
+        }
+        
+        rotateActive = !rotateActive
     }
     
 }
