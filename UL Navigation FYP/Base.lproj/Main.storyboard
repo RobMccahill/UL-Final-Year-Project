@@ -135,13 +135,39 @@
                                     <action selector="rotateButtonTapped:" destination="BV1-FR-VrT" eventType="touchUpInside" id="lWQ-EV-DaQ"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uxE-YM-6M6">
+                                <rect key="frame" x="282" y="331.5" width="30" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="7Mj-Ar-uIV"/>
+                                    <constraint firstAttribute="width" constant="30" id="RUM-r6-Uru"/>
+                                </constraints>
+                                <state key="normal" image="button-rotate-clockwise"/>
+                                <connections>
+                                    <action selector="clockwiseButtonTapped:" destination="BV1-FR-VrT" eventType="touchUpInside" id="vlK-DW-UKL"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4BG-DU-Las">
+                                <rect key="frame" x="244" y="331.5" width="30" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="2XT-Cg-cGu"/>
+                                    <constraint firstAttribute="width" constant="30" id="urw-Ya-yQA"/>
+                                </constraints>
+                                <state key="normal" image="button-rotate-anticlockwise"/>
+                                <connections>
+                                    <action selector="anticlockwiseButtonTapped:" destination="BV1-FR-VrT" eventType="touchUpInside" id="3GL-Qp-8eF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="VZf-RM-R8a" secondAttribute="trailing" constant="20" symbolic="YES" id="0TP-EE-jbm"/>
                             <constraint firstItem="pFv-b4-x8r" firstAttribute="leading" secondItem="QA8-Rw-JBo" secondAttribute="leading" id="58Q-xt-X2Y"/>
                             <constraint firstItem="pFv-b4-x8r" firstAttribute="bottom" secondItem="QA8-Rw-JBo" secondAttribute="bottom" id="6oE-EX-leF"/>
+                            <constraint firstItem="4BG-DU-Las" firstAttribute="leading" secondItem="H3G-Yt-L6q" secondAttribute="leading" id="8au-aB-rRA"/>
                             <constraint firstItem="pFv-b4-x8r" firstAttribute="top" secondItem="1WB-l3-WyM" secondAttribute="top" id="BIu-I2-m2s"/>
+                            <constraint firstItem="H3G-Yt-L6q" firstAttribute="top" secondItem="4BG-DU-Las" secondAttribute="bottom" constant="4" id="EFk-5v-Umm"/>
                             <constraint firstItem="QA8-Rw-JBo" firstAttribute="trailing" secondItem="8B7-8m-5xr" secondAttribute="trailing" constant="8" id="FLu-0D-5hv"/>
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="top" secondItem="8B7-8m-5xr" secondAttribute="bottom" constant="8" id="K0f-mC-e9Y"/>
                             <constraint firstItem="H3G-Yt-L6q" firstAttribute="leading" secondItem="ZJN-bm-R0O" secondAttribute="trailing" constant="8" id="L0h-e6-eRj"/>
@@ -152,6 +178,7 @@
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="top" secondItem="kPM-nw-Co8" secondAttribute="bottom" constant="8" id="Spj-kE-l5t"/>
                             <constraint firstItem="8B7-8m-5xr" firstAttribute="leading" secondItem="H3G-Yt-L6q" secondAttribute="trailing" constant="8" id="Ycm-dt-gx4"/>
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="top" secondItem="H3G-Yt-L6q" secondAttribute="bottom" constant="8" id="ZoQ-tr-4gB"/>
+                            <constraint firstItem="uxE-YM-6M6" firstAttribute="leading" secondItem="8B7-8m-5xr" secondAttribute="leading" id="Zvg-qi-w1c"/>
                             <constraint firstItem="QA8-Rw-JBo" firstAttribute="trailing" secondItem="Uaj-Zr-XjS" secondAttribute="trailing" constant="8" id="cTD-nQ-fCP"/>
                             <constraint firstItem="ZJN-bm-R0O" firstAttribute="leading" secondItem="kPM-nw-Co8" secondAttribute="trailing" constant="8" id="fkv-uS-h7i"/>
                             <constraint firstItem="VZf-RM-R8a" firstAttribute="leading" secondItem="QA8-Rw-JBo" secondAttribute="leading" constant="8" id="hNG-X2-ZIW"/>
@@ -159,6 +186,7 @@
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="height" secondItem="QA8-Rw-JBo" secondAttribute="height" multiplier="0.3" id="ru6-5V-r61"/>
                             <constraint firstItem="kPM-nw-Co8" firstAttribute="leading" secondItem="QA8-Rw-JBo" secondAttribute="leading" constant="8" id="s06-pc-uUv"/>
                             <constraint firstItem="Uaj-Zr-XjS" firstAttribute="top" secondItem="1WB-l3-WyM" secondAttribute="top" constant="32" id="seg-Ir-5EK"/>
+                            <constraint firstItem="8B7-8m-5xr" firstAttribute="top" secondItem="uxE-YM-6M6" secondAttribute="bottom" constant="4" id="sur-2C-eEp"/>
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="bottom" secondItem="QA8-Rw-JBo" secondAttribute="bottom" id="uBJ-8q-uqN"/>
                             <constraint firstItem="8Qn-Uh-z6N" firstAttribute="top" secondItem="ZJN-bm-R0O" secondAttribute="bottom" constant="8" id="z7N-iR-a4y"/>
                         </constraints>
@@ -167,6 +195,8 @@
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="mapView" destination="8Qn-Uh-z6N" id="fWI-jG-wmk"/>
+                        <outlet property="rotateAnticlockwiseButton" destination="4BG-DU-Las" id="Yn2-NH-oZL"/>
+                        <outlet property="rotateClockwiseButton" destination="uxE-YM-6M6" id="O8q-l9-7f5"/>
                         <outlet property="sceneView" destination="pFv-b4-x8r" id="VZ3-RI-eXi"/>
                         <outlet property="sessionInfoLabel" destination="FSS-k2-Fhv" id="oQF-AU-mKu"/>
                         <outlet property="sessionInfoView" destination="kPM-nw-Co8" id="c89-Tg-9Js"/>
@@ -292,12 +322,12 @@
                                     <constraint firstAttribute="height" constant="30" id="PQT-Mk-kXG"/>
                                     <constraint firstAttribute="width" constant="30" id="jcY-p6-iQh"/>
                                 </constraints>
+                                <inset key="imageEdgeInsets" minX="2" minY="2" maxX="2" maxY="2"/>
                                 <state key="normal" image="user-location"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="layer.cornerRadius" value="10"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                        <color key="value" red="0.23241445422172546" green="0.6011931300163269" blue="0.98811155557632446" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="value" name="keyboardFocusIndicatorColor" catalog="System" colorSpace="catalog"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
@@ -323,6 +353,7 @@
                     <connections>
                         <outlet property="mapView" destination="P5j-qa-eXo" id="aAq-cp-TZ8"/>
                         <outlet property="tableView" destination="1CS-Qw-8bc" id="dvm-rQ-Tl4"/>
+                        <outlet property="userLocationButton" destination="Up3-sg-Q1y" id="kYW-lF-uYF"/>
                         <segue destination="BV1-FR-VrT" kind="show" identifier="goToARView" id="tcu-dj-2Rq"/>
                     </connections>
                 </viewController>
@@ -474,6 +505,8 @@
     <resources>
         <image name="button-move" width="48" height="48"/>
         <image name="button-rotate" width="128" height="128"/>
+        <image name="button-rotate-anticlockwise" width="48" height="48"/>
+        <image name="button-rotate-clockwise" width="72" height="72"/>
         <image name="user-location" width="36" height="36"/>
     </resources>
 </document>

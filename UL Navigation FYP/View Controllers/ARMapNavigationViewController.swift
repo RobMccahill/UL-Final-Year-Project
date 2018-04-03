@@ -19,6 +19,8 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var startRouteButton: UIButton!
     @IBOutlet var mapView: MKMapView!
+    @IBOutlet weak var rotateAnticlockwiseButton: UIButton!
+    @IBOutlet weak var rotateClockwiseButton: UIButton!
     
     var locationManager = CLLocationManager()
     let height = Float(-1.5)
@@ -30,6 +32,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     var rotateActive = false
     var alignActive = false
     
+    var pathRootNode = SCNNode()
     var pathNodes = [SCNNode]()
     
     // MARK: - View Life Cycle
@@ -203,6 +206,8 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
         startRouteButton.isHidden = true
         routeStarted = true
         
+        pathRootNode.transform = sceneView.scene.rootNode.transform
+        
         if let directions = self.directions {
                 
                 if(directions.routes.count > 0) {
@@ -213,13 +218,15 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
                     
                     var i = 0
                     while(i < route.polyline.pointCount - 1) {
-                        self.createPathBetweenPoints(pointA: coordsPointer[i], pointB: coordsPointer[i+1], toNode:self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+                        self.createPathBetweenPoints(pointA: coordsPointer[i], pointB: coordsPointer[i+1], toNode:pathRootNode, withOrigin: self.mapView.userLocation.location!)
                         
                         i += 1
                     }
                     
 //                    final connection required to link last point to destination
 //                    self.createPathBetweenPoints(pointA: coordsPointer[route.polyline.pointCount - 1], pointB: directions.destination.placemark.coordinate, toNode: self.sceneView.scene.rootNode, withOrigin: self.mapView.userLocation.location!)
+                    
+                    sceneView.scene.rootNode.addChildNode(pathRootNode)
                 }
         }
     }
@@ -263,7 +270,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
         pathNode.look(at: locationDestVector)
         NSLog("X: \(locationTransform.latitudeTranslation) Z: \(locationTransform.longitudeTranslation)")
         
-        self.sceneView.scene.rootNode.addChildNode(pathNode)
+        parentNode.addChildNode(pathNode)
         pathNodes.append(pathNode)
 
     }
@@ -330,8 +337,21 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
             sender.imageView?.tintColor = .black
         }
         
+        rotateClockwiseButton.isHidden = !rotateClockwiseButton.isHidden
+        rotateAnticlockwiseButton.isHidden = !rotateAnticlockwiseButton.isHidden
+        
         rotateActive = !rotateActive
     }
+    
+    @IBAction func clockwiseButtonTapped(_ sender: UIButton) {
+        pathRootNode.eulerAngles.y -= Float(1.toRadians())
+    }
+    
+    @IBAction func anticlockwiseButtonTapped(_ sender: UIButton) {
+       pathRootNode.eulerAngles.y += Float(1.toRadians())
+    }
+    
+    
     
 }
 

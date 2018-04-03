@@ -16,6 +16,7 @@ class MapDisplayViewController: UIViewController {
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var tableView: UITableView!
     
+    @IBOutlet weak var userLocationButton: UIButton!
     let locationManager = CLLocationManager()
     var mapZoomed = false
     var matchingItems:[MKMapItem] = []
@@ -28,7 +29,9 @@ class MapDisplayViewController: UIViewController {
         locationManager.delegate = self
         handleMapSearchDelegate = self
         
-        
+        userLocationButton.layer.borderWidth = 0.5
+        let customBlue = UIColor(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0)
+        userLocationButton.layer.borderColor = customBlue.cgColor
         
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             locationManager.startUpdatingLocation()
