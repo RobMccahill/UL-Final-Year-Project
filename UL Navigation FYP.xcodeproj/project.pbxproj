@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D404CD9E206C02C200149FCC /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D404CD9D206C02C200149FCC /* CacheManager.swift */; };
+		D404CD9E206C02C200149FCC /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D404CD9D206C02C200149FCC /* PersistenceManager.swift */; };
 		D40AFC2220221A83003344CE /* MapDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40AFC2120221A83003344CE /* MapDisplayViewController.swift */; };
-		D42A03BE2045E19200C7AD70 /* MatrixHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42A03BD2045E19200C7AD70 /* MatrixHelper.swift */; };
-		D42A03C02045E2A700C7AD70 /* SCNNode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42A03BF2045E2A700C7AD70 /* SCNNode+Extensions.swift */; };
-		D42A03C22045E33200C7AD70 /* SCNVector3+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42A03C12045E33200C7AD70 /* SCNVector3+Extensions.swift */; };
+		D410956E2073F74300F30EFC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = D410956D2073F74300F30EFC /* Reachability.swift */; };
 		D4848724203DBA8A00A50C88 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D4848723203DBA8A00A50C88 /* readme.md */; };
 		D4848727203DC0F500A50C88 /* Double+Radians.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4848726203DC0F500A50C88 /* Double+Radians.swift */; };
 		D4848729203DD94600A50C88 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4848728203DD94600A50C88 /* CLLocation+Extensions.swift */; };
@@ -25,11 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D404CD9D206C02C200149FCC /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		D404CD9D206C02C200149FCC /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		D40AFC2120221A83003344CE /* MapDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDisplayViewController.swift; sourceTree = "<group>"; };
-		D42A03BD2045E19200C7AD70 /* MatrixHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixHelper.swift; sourceTree = "<group>"; };
-		D42A03BF2045E2A700C7AD70 /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
-		D42A03C12045E33200C7AD70 /* SCNVector3+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+Extensions.swift"; sourceTree = "<group>"; };
+		D410956D2073F74300F30EFC /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		D4848723203DBA8A00A50C88 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		D4848726203DC0F500A50C88 /* Double+Radians.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Radians.swift"; sourceTree = "<group>"; };
 		D4848728203DD94600A50C88 /* CLLocation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.swift"; sourceTree = "<group>"; };
@@ -58,7 +54,8 @@
 		D404CD9C206C02B100149FCC /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
-				D404CD9D206C02C200149FCC /* CacheManager.swift */,
+				D404CD9D206C02C200149FCC /* PersistenceManager.swift */,
+				D410956D2073F74300F30EFC /* Reachability.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -79,9 +76,6 @@
 			children = (
 				D4848726203DC0F500A50C88 /* Double+Radians.swift */,
 				D4848728203DD94600A50C88 /* CLLocation+Extensions.swift */,
-				D42A03BD2045E19200C7AD70 /* MatrixHelper.swift */,
-				D42A03BF2045E2A700C7AD70 /* SCNNode+Extensions.swift */,
-				D42A03C12045E33200C7AD70 /* SCNVector3+Extensions.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -192,15 +186,13 @@
 			files = (
 				D4848727203DC0F500A50C88 /* Double+Radians.swift in Sources */,
 				D4848729203DD94600A50C88 /* CLLocation+Extensions.swift in Sources */,
-				D42A03BE2045E19200C7AD70 /* MatrixHelper.swift in Sources */,
-				D42A03C02045E2A700C7AD70 /* SCNNode+Extensions.swift in Sources */,
+				D410956E2073F74300F30EFC /* Reachability.swift in Sources */,
 				D40AFC2220221A83003344CE /* MapDisplayViewController.swift in Sources */,
 				D4AE48602021F660008CA294 /* ARMapNavigationViewController.swift in Sources */,
-				D404CD9E206C02C200149FCC /* CacheManager.swift in Sources */,
+				D404CD9E206C02C200149FCC /* PersistenceManager.swift in Sources */,
 				D48AB3DF2044818B00F3D5E1 /* ChooseOptionViewController.swift in Sources */,
 				D4AE485C2021F660008CA294 /* AppDelegate.swift in Sources */,
 				D48AB3DB20447F7100F3D5E1 /* ARQRViewController.swift in Sources */,
-				D42A03C22045E33200C7AD70 /* SCNVector3+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

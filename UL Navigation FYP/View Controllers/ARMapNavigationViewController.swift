@@ -23,7 +23,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     @IBOutlet weak var rotateClockwiseButton: UIButton!
     
     var locationManager = CLLocationManager()
-    let height = Float(-1.5)
+    let height = Float(-3)
     
     var directions : MKDirectionsResponse?
     var destinationCoord : CLLocationCoordinate2D?
@@ -250,11 +250,9 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
         let location2Transform = origin.translation(toLocation: locationB)
         let pathLength = CGFloat(locationB.distance(from: locationA))
         
-        //y i k e s
         let midpointTransform = SCNVector3Make(Float((locationTransform.longitudeTranslation +
                                                       location2Transform.longitudeTranslation) / 2),
-                                               Float((locationTransform.altitudeTranslation +
-                                                      location2Transform.altitudeTranslation) / 2),
+                                               height,
                                                -Float((locationTransform.latitudeTranslation +
                                                        location2Transform.latitudeTranslation) / 2))
         
@@ -264,7 +262,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
         pathNode.position = midpointTransform
         
         let locationDestVector = SCNVector3Make(Float(location2Transform.longitudeTranslation),
-                                                Float(location2Transform.altitudeTranslation),
+                                                height,
                                                 -Float(location2Transform.latitudeTranslation))
         
         pathNode.look(at: locationDestVector)
