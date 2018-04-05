@@ -23,7 +23,7 @@ class ARMapNavigationViewController: UIViewController, ARSCNViewDelegate, ARSess
     @IBOutlet weak var rotateClockwiseButton: UIButton!
     
     var locationManager = CLLocationManager()
-    let height = Float(-3)
+    let height = Float(-1.5)
     
     var directions : MKDirectionsResponse?
     var destinationCoord : CLLocationCoordinate2D?
