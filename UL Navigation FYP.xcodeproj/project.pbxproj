@@ -338,7 +338,7 @@
 				DEVELOPMENT_TEAM = U97E6RE79Y;
 				INFOPLIST_FILE = "UL Navigation FYP/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.UL-Navigation-FYP";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.robMccahill.UL-Navigation-FYP";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
@@ -355,7 +355,7 @@
 				DEVELOPMENT_TEAM = U97E6RE79Y;
 				INFOPLIST_FILE = "UL Navigation FYP/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.UL-Navigation-FYP";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.robMccahill.UL-Navigation-FYP";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;

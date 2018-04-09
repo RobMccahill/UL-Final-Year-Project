@@ -1,9 +1,8 @@
 //
 //  CLLocation+Extensions.swift
-//  ARKit+CoreLocation
+//  UL Navigation FYP
 //
-//  Created by Andrew Hart on 02/07/2017.
-//  Copyright © 2017 Project Dent. All rights reserved.
+//  Created by Robert Mccahill on 21/02/2018.
 //
 import Foundation
 import CoreLocation
@@ -26,8 +25,6 @@ public extension CLLocation {
         self.init(coordinate: coordinate, altitude: altitude, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: Date())
     }
     
-    ///Translates distance in meters between two locations.
-    ///Returns the result as the distance in latitude and distance in longitude.
     public func translation(toLocation location: CLLocation) -> LocationTranslation {
         
         let inbetweenLocation = CLLocation(latitude: self.coordinate.latitude, longitude: location.coordinate.longitude)
@@ -58,47 +55,5 @@ public extension CLLocation {
             latitudeTranslation: latitudeTranslation,
             longitudeTranslation: longitudeTranslation,
             altitudeTranslation: altitudeTranslation)
-    }
-    
-    public func translatedLocation(with translation: LocationTranslation) -> CLLocation {
-        let latitudeCoordinate = self.coordinate.coordinateWithBearing(bearing: 0, distanceMeters: translation.latitudeTranslation)
-        
-        let longitudeCoordinate = self.coordinate.coordinateWithBearing(bearing: 90, distanceMeters: translation.longitudeTranslation)
-        
-        let coordinate = CLLocationCoordinate2D(
-            latitude: latitudeCoordinate.latitude,
-            longitude: longitudeCoordinate.longitude)
-        
-        let altitude = self.altitude + translation.altitudeTranslation
-        
-        return CLLocation(coordinate: coordinate, altitude: altitude, horizontalAccuracy: self.horizontalAccuracy, verticalAccuracy: self.verticalAccuracy, timestamp: self.timestamp)
-    }
-}
-
-extension Double {
-    func metersToLatitude() -> Double {
-        return self / (6360500.0)
-    }
-    
-    func metersToLongitude() -> Double {
-        return self / (5602900.0)
-    }
-}
-
-public extension CLLocationCoordinate2D {
-    public func coordinateWithBearing(bearing:Double, distanceMeters:Double) -> CLLocationCoordinate2D {
-        //The numbers for earth radius may be _off_ here
-        //but this gives a reasonably accurate result..
-        //Any correction here is welcome.
-        let distRadiansLat = distanceMeters.metersToLatitude() // earth radius in meters latitude
-        let distRadiansLong = distanceMeters.metersToLongitude() // earth radius in meters longitude
-        
-        let lat1 = self.latitude.toRadians()
-        let lon1 = self.longitude.toRadians()
-        
-        let lat2 = asin(sin(lat1) * cos(distRadiansLat) + cos(lat1) * sin(distRadiansLat) * cos(bearing))
-        let lon2 = lon1 + atan2(sin(bearing) * sin(distRadiansLong) * cos(lat1), cos(distRadiansLong) - sin(lat1) * sin(lat2))
-        
-        return CLLocationCoordinate2D(latitude: lat2.toDegrees(), longitude: lon2.toDegrees())
     }
 }
